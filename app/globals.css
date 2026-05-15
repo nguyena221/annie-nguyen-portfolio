@@ -4,54 +4,61 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Sophisticated dark slate theme with teal accent */
-  --background: oklch(0.13 0.01 240);
-  --foreground: oklch(0.95 0.01 240);
-  --card: oklch(0.16 0.01 240);
-  --card-foreground: oklch(0.95 0.01 240);
-  --popover: oklch(0.16 0.01 240);
-  --popover-foreground: oklch(0.95 0.01 240);
-  --primary: oklch(0.75 0.15 180);
-  --primary-foreground: oklch(0.13 0.01 240);
-  --secondary: oklch(0.22 0.01 240);
-  --secondary-foreground: oklch(0.95 0.01 240);
-  --muted: oklch(0.25 0.01 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.75 0.15 180);
-  --accent-foreground: oklch(0.13 0.01 240);
+  /* Bright, artsy, warm cream theme with coral/peach accent */
+  --background: oklch(0.97 0.01 80);
+  --foreground: oklch(0.25 0.02 50);
+  --card: oklch(1.0 0 0);
+  --card-foreground: oklch(0.25 0.02 50);
+  --popover: oklch(1.0 0 0);
+  --popover-foreground: oklch(0.25 0.02 50);
+  --primary: oklch(0.68 0.18 25);
+  --primary-foreground: oklch(1.0 0 0);
+  --secondary: oklch(0.94 0.02 80);
+  --secondary-foreground: oklch(0.35 0.02 50);
+  --muted: oklch(0.92 0.02 80);
+  --muted-foreground: oklch(0.50 0.02 50);
+  --accent: oklch(0.85 0.12 140);
+  --accent-foreground: oklch(0.25 0.02 50);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.95 0.01 240);
-  --border: oklch(0.28 0.01 240);
-  --input: oklch(0.22 0.01 240);
-  --ring: oklch(0.75 0.15 180);
-  --chart-1: oklch(0.75 0.15 180);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.75rem;
+  --border: oklch(0.88 0.02 80);
+  --input: oklch(0.94 0.02 80);
+  --ring: oklch(0.68 0.18 25);
+  --chart-1: oklch(0.68 0.18 25);
+  --chart-2: oklch(0.75 0.15 140);
+  --chart-3: oklch(0.70 0.12 280);
+  --chart-4: oklch(0.78 0.14 60);
+  --chart-5: oklch(0.65 0.16 200);
+  --radius: 1rem;
+  
+  /* Custom accent colors */
+  --coral: oklch(0.68 0.18 25);
+  --sage: oklch(0.75 0.10 145);
+  --lavender: oklch(0.78 0.10 290);
+  --peach: oklch(0.85 0.10 55);
+  --sky: oklch(0.78 0.10 220);
 }
 
 .dark {
-  --background: oklch(0.13 0.01 240);
-  --foreground: oklch(0.95 0.01 240);
-  --card: oklch(0.16 0.01 240);
-  --card-foreground: oklch(0.95 0.01 240);
-  --popover: oklch(0.16 0.01 240);
-  --popover-foreground: oklch(0.95 0.01 240);
-  --primary: oklch(0.75 0.15 180);
-  --primary-foreground: oklch(0.13 0.01 240);
-  --secondary: oklch(0.22 0.01 240);
-  --secondary-foreground: oklch(0.95 0.01 240);
-  --muted: oklch(0.25 0.01 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.75 0.15 180);
-  --accent-foreground: oklch(0.13 0.01 240);
+  --background: oklch(0.15 0.02 50);
+  --foreground: oklch(0.95 0.01 80);
+  --card: oklch(0.20 0.02 50);
+  --card-foreground: oklch(0.95 0.01 80);
+  --popover: oklch(0.20 0.02 50);
+  --popover-foreground: oklch(0.95 0.01 80);
+  --primary: oklch(0.72 0.16 25);
+  --primary-foreground: oklch(0.15 0.02 50);
+  --secondary: oklch(0.25 0.02 50);
+  --secondary-foreground: oklch(0.90 0.01 80);
+  --muted: oklch(0.30 0.02 50);
+  --muted-foreground: oklch(0.65 0.01 80);
+  --accent: oklch(0.70 0.12 140);
+  --accent-foreground: oklch(0.15 0.02 50);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.28 0.01 240);
-  --input: oklch(0.22 0.01 240);
-  --ring: oklch(0.75 0.15 180);
+  --border: oklch(0.32 0.02 50);
+  --input: oklch(0.25 0.02 50);
+  --ring: oklch(0.72 0.16 25);
 }
 
 @theme inline {
@@ -81,6 +88,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-coral: var(--coral);
+  --color-sage: var(--sage);
+  --color-lavender: var(--lavender);
+  --color-peach: var(--peach);
+  --color-sky: var(--sky);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -100,25 +112,35 @@
   }
 }
 
-/* Custom selection color */
+/* Custom selection color - peachy coral */
 ::selection {
-  background-color: oklch(0.75 0.15 180 / 0.3);
+  background-color: oklch(0.68 0.18 25 / 0.25);
 }
 
-/* Subtle scrollbar styling */
+/* Cute subtle scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: oklch(0.13 0.01 240);
+  background: oklch(0.94 0.02 80);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.28 0.01 240);
-  border-radius: 4px;
+  background: oklch(0.68 0.18 25 / 0.4);
+  border-radius: 10px;
+  border: 2px solid oklch(0.94 0.02 80);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.35 0.01 240);
+  background: oklch(0.68 0.18 25 / 0.6);
+}
+
+/* Decorative blob shapes */
+.blob {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.blob-2 {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
 }

@@ -1,50 +1,83 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, FileText, ArrowDown } from "lucide-react";
+import { Github, Linkedin, FileText, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="min-h-screen flex flex-col justify-center relative px-6 md:px-12 lg:px-24">
-      <div className="max-w-4xl">
-        <motion.p
+    <section className="min-h-screen flex flex-col justify-center relative px-6 md:px-12 lg:px-24 overflow-hidden">
+      {/* Decorative background blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.4, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute -top-20 -right-20 w-96 h-96 bg-coral/20 blob"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.3, scale: 1 }}
+          transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
+          className="absolute top-1/3 -left-32 w-72 h-72 bg-sage/30 blob-2"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.25, scale: 1 }}
+          transition={{ duration: 1.5, delay: 0.4, ease: "easeOut" }}
+          className="absolute bottom-20 right-1/4 w-64 h-64 bg-lavender/25 blob"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.2, scale: 1 }}
+          transition={{ duration: 1.5, delay: 0.6, ease: "easeOut" }}
+          className="absolute bottom-1/3 left-1/3 w-48 h-48 bg-peach/30 blob-2"
+        />
+      </div>
+
+      <div className="max-w-4xl relative z-10">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-primary font-mono text-sm mb-4 tracking-wider"
+          className="flex items-center gap-2 mb-6"
         >
-          Hi, my name is
-        </motion.p>
+          <Sparkles className="w-5 h-5 text-coral" />
+          <span className="text-coral font-medium tracking-wide">
+            Hello, I&apos;m
+          </span>
+        </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4"
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4"
         >
-          Annie Nguyen.
+          <span className="bg-gradient-to-r from-foreground via-coral to-foreground bg-clip-text">
+            Annie Nguyen
+          </span>
         </motion.h1>
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-muted-foreground mb-6"
+          className="text-2xl sm:text-3xl md:text-4xl font-medium text-muted-foreground mb-6"
         >
-          I build things for the web.
+          Creating delightful digital experiences
         </motion.h2>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-muted-foreground text-lg md:text-xl max-w-2xl mb-10 leading-relaxed"
+          className="text-muted-foreground text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
         >
-          Third-year Computer Science student at the{" "}
-          <span className="text-primary">University of Virginia</span>{" "}
-          passionate about crafting elegant digital experiences. Currently
-          focused on building accessible, user-centered applications.
+          CS student at{" "}
+          <span className="text-coral font-medium">UVA</span> who loves 
+          turning ideas into beautiful, functional apps. Currently exploring 
+          the intersection of design and code.
         </motion.p>
 
         <motion.div
@@ -56,7 +89,7 @@ export function Hero() {
           <Button
             asChild
             size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 px-6"
+            className="bg-coral text-white hover:bg-coral/90 rounded-full px-8 shadow-lg shadow-coral/25"
           >
             <a href="#" target="_blank" rel="noopener noreferrer">
               <FileText className="w-4 h-4 mr-2" />
@@ -68,7 +101,7 @@ export function Hero() {
             asChild
             variant="outline"
             size="lg"
-            className="border-primary text-primary hover:bg-primary/10 px-6"
+            className="border-2 border-foreground/20 hover:border-coral hover:text-coral rounded-full px-6"
           >
             <a
               href="https://github.com"
@@ -84,7 +117,7 @@ export function Hero() {
             asChild
             variant="outline"
             size="lg"
-            className="border-primary text-primary hover:bg-primary/10 px-6"
+            className="border-2 border-foreground/20 hover:border-coral hover:text-coral rounded-full px-6"
           >
             <a
               href="https://linkedin.com"
@@ -105,35 +138,23 @@ export function Hero() {
         transition={{ duration: 0.5, delay: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <motion.div
+        <motion.a
+          href="#about"
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="flex flex-col items-center gap-2 text-muted-foreground hover:text-coral transition-colors"
+          aria-label="Scroll to about section"
         >
-          <a
-            href="#about"
-            className="text-muted-foreground hover:text-primary transition-colors"
-            aria-label="Scroll to about section"
-          >
-            <ArrowDown className="w-6 h-6" />
-          </a>
-        </motion.div>
+          <span className="text-xs tracking-widest">SCROLL</span>
+          <div className="w-5 h-8 rounded-full border-2 border-current flex justify-center pt-1">
+            <motion.div
+              animate={{ y: [0, 8, 0], opacity: [1, 0.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-1.5 h-1.5 rounded-full bg-current"
+            />
+          </div>
+        </motion.a>
       </motion.div>
-
-      {/* Decorative element */}
-      <div className="absolute top-1/2 right-12 -translate-y-1/2 hidden xl:block">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="w-72 h-72 rounded-full border border-primary/30"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.7 }}
-          className="w-96 h-96 rounded-full border border-primary/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
-      </div>
     </section>
   );
 }

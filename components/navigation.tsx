@@ -34,7 +34,7 @@ export function Navigation() {
         transition={{ duration: 0.5 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-background/80 backdrop-blur-lg border-b border-border"
+            ? "bg-background/90 backdrop-blur-lg border-b border-border shadow-sm"
             : "bg-transparent"
         }`}
       >
@@ -43,9 +43,9 @@ export function Navigation() {
             {/* Logo */}
             <a
               href="#"
-              className="text-xl font-bold text-primary hover:opacity-80 transition-opacity"
+              className="text-xl font-bold text-coral hover:opacity-80 transition-opacity"
             >
-              AN
+              annie.
             </a>
 
             {/* Desktop Navigation */}
@@ -57,11 +57,8 @@ export function Navigation() {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-sm text-muted-foreground hover:text-coral transition-colors font-medium"
                 >
-                  <span className="text-primary font-mono text-xs mr-1">
-                    0{index + 1}.
-                  </span>
                   {link.name}
                 </motion.a>
               ))}
@@ -72,9 +69,8 @@ export function Navigation() {
               >
                 <Button
                   asChild
-                  variant="outline"
                   size="sm"
-                  className="border-primary text-primary hover:bg-primary/10"
+                  className="bg-coral text-white hover:bg-coral/90 rounded-full px-6"
                 >
                   <a href="#" target="_blank" rel="noopener noreferrer">
                     Resume
@@ -86,7 +82,7 @@ export function Navigation() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
+              className="md:hidden p-2 text-foreground hover:text-coral transition-colors"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -103,18 +99,31 @@ export function Navigation() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 md:hidden"
           >
             <div
-              className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-foreground/20 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <div className="absolute right-0 top-0 h-full w-3/4 max-w-sm bg-card border-l border-border">
-              <div className="flex flex-col items-center justify-center h-full gap-8 p-8">
+            <motion.div 
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-card border-l border-border shadow-xl"
+            >
+              <div className="flex flex-col items-start justify-center h-full gap-6 p-8">
+                <a
+                  href="#"
+                  className="text-2xl font-bold text-coral mb-4"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  annie.
+                </a>
                 {navLinks.map((link, index) => (
                   <motion.a
                     key={link.name}
@@ -123,11 +132,8 @@ export function Navigation() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-lg text-muted-foreground hover:text-primary transition-colors"
+                    className="text-lg text-muted-foreground hover:text-coral transition-colors font-medium"
                   >
-                    <span className="text-primary font-mono text-sm mr-2">
-                      0{index + 1}.
-                    </span>
                     {link.name}
                   </motion.a>
                 ))}
@@ -139,8 +145,7 @@ export function Navigation() {
                 >
                   <Button
                     asChild
-                    variant="outline"
-                    className="border-primary text-primary hover:bg-primary/10"
+                    className="bg-coral text-white hover:bg-coral/90 rounded-full px-8"
                   >
                     <a href="#" target="_blank" rel="noopener noreferrer">
                       Resume
@@ -148,7 +153,7 @@ export function Navigation() {
                   </Button>
                 </motion.div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
