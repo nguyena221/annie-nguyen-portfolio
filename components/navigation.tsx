@@ -42,7 +42,7 @@ export function Navigation() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <a
-              href="#"
+              href="#about"
               className="text-xl font-bold text-coral hover:opacity-80 transition-opacity"
             >
               annie.
@@ -118,7 +118,7 @@ export function Navigation() {
             >
               <div className="flex flex-col items-start justify-center h-full gap-6 p-8">
                 <a
-                  href="#"
+                  href="#about"
                   className="text-2xl font-bold text-coral mb-4"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >

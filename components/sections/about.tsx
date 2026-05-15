@@ -20,7 +20,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="py-24 md:py-32 px-6 md:px-12 lg:px-24 relative"
+      className="min-h-screen pt-32 pb-24 md:pt-40 md:pb-32 px-6 md:px-12 lg:px-24 relative"
       ref={ref}
     >
       {/* Decorative element */}

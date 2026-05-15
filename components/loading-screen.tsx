@@ -72,8 +72,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
           style={{ backgroundColor: "#fefaf0" }}
           initial={{ opacity: 1 }}
+          animate={{ backgroundColor: phase === "dispersing" ? "#f8f5f2" : "#fefaf0" }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
         >
           {/* Main collage container */}
           <div className="relative h-[605px] w-[905px] max-w-[92vw] -translate-y-6">

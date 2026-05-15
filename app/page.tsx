@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { Navigation } from "@/components/navigation"
-import { Hero } from "@/components/sections/hero"
 import { About } from "@/components/sections/about"
 import { Projects } from "@/components/sections/projects"
 import { Skills } from "@/components/sections/skills"
@@ -18,18 +18,21 @@ export default function Home() {
     <>
       <LoadingScreen onComplete={() => setIsLoading(false)} />
       
-      {!isLoading && (
-        <main className="min-h-screen">
-          <Navigation />
-          <Hero />
-          <About />
-          <Projects />
-          <Skills />
-          <Experience />
-          <Contact />
-          <Footer />
-        </main>
-      )}
+      <motion.main
+        className="min-h-screen"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoading ? 0 : 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        aria-hidden={isLoading}
+      >
+        <Navigation />
+        <About />
+        <Projects />
+        <Skills />
+        <Experience />
+        <Contact />
+        <Footer />
+      </motion.main>
     </>
   )
 }
