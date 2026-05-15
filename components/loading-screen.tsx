@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import type { TargetAndTransition } from "framer-motion"
 
 interface LoadingScreenProps {
   onComplete: () => void
@@ -42,7 +43,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     }
   }, [phase, onComplete])
 
-  const shakeAnimation = {
+  const shakeAnimation: TargetAndTransition = {
     x: [0, -3, 3, -3, 3, -2, 2, -1, 1, 0],
     rotate: [0, -1, 1, -1, 1, -0.5, 0.5, 0],
     transition: {
@@ -52,7 +53,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     }
   }
 
-  const disperseDirections = [
+  const disperseDirections: TargetAndTransition[] = [
     { x: -1400, y: -800, rotate: -45 },  // Profile card - left up
     { x: 1200, y: -800, rotate: 30 },    // Cassette - right up
     { x: 1400, y: 500, rotate: 25 },     // Postcard - right
@@ -69,7 +70,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       {phase !== "done" && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: "#f5f0eb" }}
+          style={{ backgroundColor: "#fefaf0" }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
