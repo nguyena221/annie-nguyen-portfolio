@@ -1,14 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
 import { Heart, Code, Database, BarChart, Zap } from "lucide-react";
 
 export function About() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   const highlights = [
     { name: "Software Engineering", icon: Code, color: "bg-coral/10 text-coral" },
     { name: "Web Development", icon: Zap, color: "bg-sage/20 text-sage" },
@@ -21,7 +16,6 @@ export function About() {
     <section
       id="about"
       className="min-h-screen pt-32 pb-24 md:pt-40 md:pb-32 px-6 md:px-12 lg:px-24 relative"
-      ref={ref}
     >
       {/* Decorative element */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-peach/10 to-transparent pointer-events-none" />
@@ -29,7 +23,7 @@ export function About() {
       <div className="max-w-5xl mx-auto relative">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center gap-3 mb-4">
@@ -76,7 +70,7 @@ export function About() {
                     <motion.div
                       key={item.name}
                       initial={{ opacity: 0, scale: 0.8 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-full ${item.color}`}
                     >

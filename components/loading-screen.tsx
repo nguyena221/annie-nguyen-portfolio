@@ -29,11 +29,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       // After cursor reaches photo and "clicks", disperse
       const clickTimer = setTimeout(() => {
         setPhase("dispersing")
+        onComplete()
       }, 1200)
 
       const doneTimer = setTimeout(() => {
         setPhase("done")
-        onComplete()
       }, 2500)
 
       return () => {
@@ -70,14 +70,22 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       {phase !== "done" && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: "#fefaf0" }}
           initial={{ opacity: 1 }}
-          animate={{ backgroundColor: phase === "dispersing" ? "#f8f5f2" : "#fefaf0" }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
+          <motion.div
+            className="absolute inset-0"
+            style={{ backgroundColor: "#fefaf0" }}
+            animate={{
+              backgroundColor: phase === "dispersing" ? "#f8f5f2" : "#fefaf0",
+              opacity: phase === "dispersing" ? 0 : 1,
+            }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+          />
+
           {/* Main collage container */}
-          <div className="relative h-[605px] w-[905px] max-w-[92vw] -translate-y-6">
+          <div className="relative z-10 h-[605px] w-[905px] max-w-[92vw] -translate-y-6">
             
             {/* Profile Card (stack of papers with photo) */}
             <motion.div
