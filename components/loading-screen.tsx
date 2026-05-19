@@ -237,7 +237,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           {/* Main collage container */}
           <div ref={collageRef} className="relative z-10 h-[605px] w-[905px] max-w-[92vw] -translate-y-6">
             
-            {/* Profile Card (stack of papers with photo) */}
+            {/* Profile Card */}
             <motion.div
               ref={(node) => {
                 itemRefs.current[0] = node
@@ -247,10 +247,44 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               transition={getItemTransition()}
             >
               <img 
-                src="/images/loading/stack-of-papers-img.png" 
+                src="/images/loading/about-page-sheet.png" 
                 alt="" 
                 onLoad={updateEdgePositions}
                 className="w-[350px] h-auto object-contain filter drop-shadow-lg"
+              />
+            </motion.div>
+            
+            {/* Profile Picture */}
+            <motion.div
+              ref={(node) => {
+                itemRefs.current[0] = node
+              }}
+              className="absolute left-[380px] top-[123px] z-10"
+              animate={getItemAnimation(0)}
+              transition={getItemTransition()}
+            >
+              <img 
+                src="/images/loading/profile-picture.png" 
+                alt="" 
+                onLoad={updateEdgePositions}
+                className="w-[100px] h-auto object-contain filter drop-shadow-lg"
+              />
+            </motion.div>
+
+            {/* Used Paper Clip */}
+            <motion.div
+              ref={(node) => {
+                itemRefs.current[0] = node
+              }}
+              className="absolute left-[430px] top-[115px] z-10"
+              animate={getItemAnimation(0)}
+              transition={getItemTransition()}
+            >
+              <img 
+                src="/images/loading/used-paper-clip.png" 
+                alt="" 
+                onLoad={updateEdgePositions}
+                className="w-[50px] h-auto object-contain filter drop-shadow-lg"
               />
             </motion.div>
 
@@ -281,10 +315,27 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               transition={getItemTransition()}
             >
               <img 
-                src="/images/loading/postcard-with-stamp.png" 
+                src="/images/loading/postcard.png" 
                 alt="" 
                 onLoad={updateEdgePositions}
                 className="w-[365px] h-auto object-contain filter drop-shadow-lg"
+              />
+            </motion.div>
+
+            {/* Stamp */}
+            <motion.div
+              ref={(node) => {
+                itemRefs.current[2] = node
+              }}
+              className="absolute left-[685px] top-[270px] z-10"
+              animate={getItemAnimation(2, 0.15)}
+              transition={getItemTransition()}
+            >
+              <img 
+                src="/images/loading/postage-stamp.png" 
+                alt="" 
+                onLoad={updateEdgePositions}
+                className="w-[100px] h-auto object-contain filter drop-shadow-lg"
               />
             </motion.div>
 
