@@ -359,9 +359,12 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               ref={(node) => {
                 itemRefs.current[5] = node
               }}
-              className="absolute left-[475px] top-[455px] z-30"
+              className="pointer-events-auto absolute left-[475px] top-[455px] z-30 cursor-pointer"
               animate={getItemAnimation(5, 0.3)}
               transition={getItemTransition()}
+              onClick={() => {
+                window.dispatchEvent(new Event("about:brown-button-click"))
+              }}
             >
               <img 
                 src="/images/loading/brown-button.png" 
