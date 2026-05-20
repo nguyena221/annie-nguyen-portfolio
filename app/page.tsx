@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Navigation } from "@/components/navigation"
 import { About } from "@/components/sections/about"
 import { Projects } from "@/components/sections/projects"
 import { Skills } from "@/components/sections/skills"
@@ -25,7 +24,6 @@ export default function Home() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         aria-hidden={isLoading}
       >
-        <Navigation />
         <About />
         <Projects />
         <Skills />
