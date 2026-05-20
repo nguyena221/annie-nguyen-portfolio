@@ -40,7 +40,7 @@ export function About() {
     hoverDismissTimer.current = setTimeout(() => {
       setShowHoverHint(false)
       hoverDismissTimer.current = null
-    }, 3000)
+    }, 2500)
   }, [showHoverHint])
 
   const scheduleClickDismiss = useCallback(() => {
@@ -51,7 +51,7 @@ export function About() {
     clickDismissTimer.current = setTimeout(() => {
       setShowClickHint(false)
       clickDismissTimer.current = null
-    }, 3000)
+    }, 1000)
   }, [showClickHint])
 
   useEffect(() => {
@@ -107,8 +107,8 @@ export function About() {
     setTilt({
       rotateX: y * -14,
       rotateY: x * 14,
-      gradientX: 50 + x * 24,
-      gradientY: 45 + y * 20,
+      gradientX: 50 + x * 40,
+      gradientY: 45 + y * 34,
     })
   }
 
@@ -132,7 +132,7 @@ export function About() {
         animate={{
           background: `radial-gradient(circle at ${tilt.gradientX}% ${tilt.gradientY}%, #e8bb67 0%, #fefaf0 46%, #e9bb69 100%)`,
         }}
-        transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        transition={{ type: "spring", stiffness: 520, damping: 32 }}
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.35),transparent_28%,transparent_72%,rgba(255,255,255,0.28))]" />
       <motion.div

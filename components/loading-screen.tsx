@@ -49,6 +49,8 @@ const edgeTargets: EdgeTarget[] = [
   { x: "right", y: "middle", rotate: 12, nudgeY: -112 },
 ]
 
+const brownButtonIndex = 5
+
 const navItems = [
   { name: "About", href: "#about", Icon: User },
   { name: "Projects", href: "#projects", Icon: FolderKanban },
@@ -230,6 +232,10 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       return parkedDirections[index]
     }
 
+    if (index === brownButtonIndex) {
+      return parkedDirections[index]
+    }
+
     return isAboutVisible ? parkedDirections[index] : hiddenDirections[index]
   }
 
@@ -374,7 +380,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               transition={getItemTransition()}
             >
               <motion.div
-                className="absolute left-[66px] top-[-8px] flex origin-left -rotate-45 items-center gap-1 rounded-full bg-[#fefaf0]/95 p-2 shadow-[0_18px_38px_rgba(67,42,22,0.28)] ring-1 ring-[#b87461]/20 backdrop-blur-sm"
+                className="absolute left-[66px] top-[-30px] flex origin-left -rotate-45 items-center gap-1 rounded-full bg-[#fefaf0]/95 p-2 shadow-[0_18px_38px_rgba(67,42,22,0.28)] ring-1 ring-[#b87461]/20 backdrop-blur-sm"
                 initial={false}
                 animate={{
                   opacity: isBrownNavOpen ? 1 : 0,
