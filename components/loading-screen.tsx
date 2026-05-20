@@ -16,21 +16,36 @@ type EdgeTarget = {
   nudgeY?: number
 }
 
-const visibleAtEdge = (size: number) => Math.min(72, size * 0.55)
+const visibleAtEdge = (size: number) => Math.min(72, size * 1)
 const offscreenGap = 96
 
 // Change these to tune where each loading item parks after the opening animation.
 // x/y choose the screen edge. nudgeX/nudgeY fine-tune the final spot in pixels.
 const edgeTargets: EdgeTarget[] = [
-  { x: "left", y: "top", rotate: -45, nudgeY: 32 },
-  { x: "right", y: "top", rotate: 30, nudgeY: 72 },
-  { x: "right", y: "middle", rotate: 25, nudgeY: -20 },
-  { x: "left", y: "bottom", rotate: -30, nudgeY: -24 },
-  { x: "left", y: "top", rotate: -60, nudgeY: 180 },
-  { x: "right", y: "bottom", rotate: 45, nudgeY: -88 },
-  { x: "left", y: "bottom", rotate: -20, nudgeY: -110 },
+  // 0: Profile Card / about-page-sheet.png
+  { x: "left", y: "top", rotate: -10, nudgeX: 120, nudgeY: 200 },
+  // 1: Ripped Paper Tape / ripped-paper-tape.png
+  { x: "left", y: "bottom", rotate: 30, nudgeX: 50, nudgeY: -260 },
+  // 2: Postcard / postcard.png
+  { x: "right", y: "middle", rotate: 90, nudgeX: -120, nudgeY: -20 },
+  // 3: Plane Ticket / plane-ticket.png
+  { x: "right", y: "top", rotate: 10, nudgeX: -170, nudgeY: 130 },
+  // 4: Seashell / seashell.png
+  { x: "left", y: "top", rotate: -60, nudgeY: 400 },
+  // 5: Brown Button / brown-button.png
+  { x: "left", y: "bottom", rotate: 45, nudgeX: 32, nudgeY: -32 },
+  // 6: Jeans Button / jeans-button.png
+  { x: "right", y: "bottom", rotate: -20, nudgeY: -50 },
+  // 7: Pearls / all-pearls.png
   { x: "right", y: "top", rotate: 35, nudgeY: 220 },
+  // 8: Paper Clip / paper-clip.png
   { x: "left", y: "bottom", rotate: -40, nudgeY: -220 },
+  // 9: Profile Picture / profile-picture.png
+  { x: "left", y: "top", rotate: -18, nudgeY: 250 },
+  // 10: Used Paper Clip / used-paper-clip.png
+  { x: "left", y: "top", rotate: 18, nudgeY: 210 },
+  // 11: Postage Stamp / postage-stamp.png
+  { x: "right", y: "middle", rotate: 12, nudgeY: -112 },
 ]
 
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
@@ -257,10 +272,10 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             {/* Profile Picture */}
             <motion.div
               ref={(node) => {
-                itemRefs.current[0] = node
+                itemRefs.current[9] = node
               }}
               className="absolute left-[380px] top-[123px] z-10"
-              animate={getItemAnimation(0)}
+              animate={getItemAnimation(9)}
               transition={getItemTransition()}
             >
               <img 
@@ -274,10 +289,10 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             {/* Used Paper Clip */}
             <motion.div
               ref={(node) => {
-                itemRefs.current[0] = node
+                itemRefs.current[10] = node
               }}
               className="absolute left-[430px] top-[115px] z-10"
-              animate={getItemAnimation(0)}
+              animate={getItemAnimation(10)}
               transition={getItemTransition()}
             >
               <img 
@@ -325,10 +340,10 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             {/* Stamp */}
             <motion.div
               ref={(node) => {
-                itemRefs.current[2] = node
+                itemRefs.current[11] = node
               }}
               className="absolute left-[685px] top-[270px] z-10"
-              animate={getItemAnimation(2, 0.15)}
+              animate={getItemAnimation(11, 0.15)}
               transition={getItemTransition()}
             >
               <img 
