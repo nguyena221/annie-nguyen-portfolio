@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion } from "framer-motion"
 import type { TargetAndTransition } from "framer-motion"
+import { BriefcaseBusiness, FolderKanban, Mail, User, Wrench } from "lucide-react"
 
 interface LoadingScreenProps {
   onComplete: () => void
@@ -48,10 +49,19 @@ const edgeTargets: EdgeTarget[] = [
   { x: "right", y: "middle", rotate: 12, nudgeY: -112 },
 ]
 
+const navItems = [
+  { name: "About", href: "#about", Icon: User },
+  { name: "Projects", href: "#projects", Icon: FolderKanban },
+  { name: "Skills", href: "#skills", Icon: Wrench },
+  { name: "Experience", href: "#experience", Icon: BriefcaseBusiness },
+  { name: "Contact", href: "#contact", Icon: Mail },
+]
+
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [phase, setPhase] = useState<"shaking" | "clicking" | "parking" | "parked">("shaking")
   const [cursorPosition, setCursorPosition] = useState({ x: 100, y: 100 })
   const [isAboutVisible, setIsAboutVisible] = useState(true)
+  const [isBrownNavOpen, setIsBrownNavOpen] = useState(false)
   const [parkedDirections, setParkedDirections] = useState<TargetAndTransition[]>(
     edgeTargets.map(({ rotate }) => ({ x: 0, y: 0, rotate }))
   )
@@ -359,19 +369,53 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               ref={(node) => {
                 itemRefs.current[5] = node
               }}
-              className="pointer-events-auto absolute left-[475px] top-[455px] z-30 cursor-pointer"
+              className="pointer-events-auto absolute left-[475px] top-[455px] z-30"
               animate={getItemAnimation(5, 0.3)}
               transition={getItemTransition()}
-              onClick={() => {
-                window.dispatchEvent(new Event("about:brown-button-click"))
-              }}
             >
-              <img 
-                src="/images/loading/brown-button.png" 
-                alt="" 
-                onLoad={updateEdgePositions}
-                className="w-[60px] h-auto object-contain filter drop-shadow-lg"
-              />
+              <motion.div
+                className="absolute left-[66px] top-[-8px] flex origin-left -rotate-45 items-center gap-1 rounded-full bg-[#fefaf0]/95 p-2 shadow-[0_18px_38px_rgba(67,42,22,0.28)] ring-1 ring-[#b87461]/20 backdrop-blur-sm"
+                initial={false}
+                animate={{
+                  opacity: isBrownNavOpen ? 1 : 0,
+                  x: isBrownNavOpen ? 0 : -12,
+                  scale: isBrownNavOpen ? 1 : 0.94,
+                  pointerEvents: isBrownNavOpen ? "auto" : "none",
+                }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              >
+                {navItems.map(({ name, href, Icon }) => (
+                  <a
+                    key={name}
+                    href={href}
+                    className="group flex h-9 w-9 items-center overflow-hidden rounded-full bg-white/70 px-2 text-[#7a5136] shadow-sm ring-1 ring-[#b87461]/15 transition-[width,background-color,color] duration-300 ease-out hover:w-28 hover:bg-[#b87461] hover:text-[#fefaf0]"
+                    aria-label={name}
+                  >
+                    <Icon className="h-5 w-5 shrink-0" strokeWidth={1.8} />
+                    <span className="ml-2 translate-x-2 whitespace-nowrap text-sm font-semibold opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100">
+                      {name}
+                    </span>
+                  </a>
+                ))}
+              </motion.div>
+              <motion.button
+                type="button"
+                className="relative z-10 cursor-pointer border-0 bg-transparent p-0"
+                aria-label={isBrownNavOpen ? "Close navigation" : "Open navigation"}
+                onClick={() => {
+                  setIsBrownNavOpen((isOpen) => !isOpen)
+                  window.dispatchEvent(new Event("about:brown-button-click"))
+                }}
+                animate={{ rotate: isBrownNavOpen ? 180 : 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 18 }}
+              >
+                <img 
+                  src="/images/loading/brown-button.png" 
+                  alt="" 
+                  onLoad={updateEdgePositions}
+                  className="h-auto w-[60px] object-contain filter drop-shadow-lg"
+                />
+              </motion.button>
             </motion.div>
 
             {/* Paperclip */}
