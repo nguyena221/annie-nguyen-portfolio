@@ -130,6 +130,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         y: hiddenY,
         rotate: target.rotate,
       }
+
     })
 
     setParkedDirections(nextParked)
@@ -197,6 +198,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           : aboutSection.offsetTop + aboutSection.offsetHeight * 0.65
 
       setIsAboutVisible(window.scrollY < hideAfter)
+
     }
 
     updateAboutVisibility()

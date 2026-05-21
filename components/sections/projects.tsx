@@ -72,13 +72,13 @@ function ProjectCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Card className={`group bg-card border-2 border-border ${project.borderColor} transition-all duration-300 overflow-hidden h-full hover:shadow-xl hover:-translate-y-1`}>
+      <Card className={`group h-full overflow-hidden border-2 border-border bg-card transition-all duration-300 ${project.borderColor} hover:-translate-y-1 hover:shadow-xl`}>
         <CardContent className="p-0">
           {/* Header with gradient */}
           <div
-            className={`bg-gradient-to-br ${project.color} p-8 flex items-center justify-between`}
+            className={`flex items-center justify-between bg-gradient-to-br ${project.color} p-5 lg:p-4`}
           >
-            <span className="text-5xl">{project.emoji}</span>
+            <span className="text-4xl lg:text-3xl">{project.emoji}</span>
             <div className="flex gap-2">
               {project.links.github && (
                 <a
@@ -106,20 +106,20 @@ function ProjectCard({
           </div>
 
           {/* Content */}
-          <div className="p-6">
-            <h3 className="text-xl font-semibold mb-3 group-hover:text-coral transition-colors">
+          <div className="p-5 lg:p-4">
+            <h3 className="mb-2 text-lg font-semibold transition-colors group-hover:text-coral lg:text-base">
               {project.title}
             </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+            <p className="mb-4 text-sm leading-relaxed text-muted-foreground lg:mb-3 lg:text-[0.8rem] lg:leading-snug">
               {project.description}
             </p>
 
             {/* Tech stack */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {project.tech.map((tech) => (
                 <span
                   key={tech}
-                  className="px-3 py-1.5 bg-secondary text-secondary-foreground text-xs font-medium rounded-full"
+                  className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground lg:px-2 lg:py-0.5 lg:text-[0.68rem]"
                 >
                   {tech}
                 </span>
@@ -139,28 +139,28 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="py-24 md:py-32 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-background via-peach/5 to-background"
+      className="relative min-h-[100svh] overflow-hidden bg-black px-6 py-20 text-white md:px-12 md:py-24 lg:h-[100svh] lg:px-24 lg:py-16"
       ref={ref}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto flex min-h-[calc(100svh-10rem)] max-w-6xl flex-col justify-center lg:h-full lg:min-h-0">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Sparkles className="w-5 h-5 text-coral" />
-            <span className="text-coral font-medium tracking-wide text-sm">MY WORK</span>
+          <div className="mb-3 flex items-center gap-3">
+            <Sparkles className="w-5 h-5 text-[#e8bb67]" />
+            <span className="text-sm font-medium tracking-wide text-[#e8bb67]">MY WORK</span>
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
-          <p className="text-muted-foreground mb-12 max-w-2xl text-lg">
+          <h2 className="mb-3 text-3xl font-bold md:text-4xl lg:text-[clamp(2rem,5vh,2.5rem)]">Featured Projects</h2>
+          <p className="mb-8 max-w-2xl text-base text-white/70 md:text-lg lg:mb-6 lg:text-[clamp(0.9rem,2vh,1.05rem)]">
             A collection of things I&apos;ve built with care, from client work to 
             personal passion projects.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:gap-4">
           {projects.map((project, index) => (
             <ProjectCard key={project.title} project={project} index={index} />
           ))}
