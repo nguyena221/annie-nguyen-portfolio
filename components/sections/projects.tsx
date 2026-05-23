@@ -100,7 +100,7 @@ I helped design and develop pages for services, business information, contact de
 ├── images/
 └── README.md`,
       "links.txt": `live: https://pronails.vercel.app/index.html
-github: Add repo link later`,
+github: https://github.com/nguyena221/pronails`,
     },
   },
 ]
