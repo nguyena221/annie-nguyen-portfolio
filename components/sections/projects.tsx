@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { CalendarDays, ExternalLink, Github, Grid2X2, MonitorSmartphone, Sparkles, Store, Terminal } from "lucide-react"
+import { Instrument_Serif } from "next/font/google"
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react"
 
 type ProjectFile = "README.md" | "features.txt" | "stack.json" | "highlights.txt" | "structure.txt" | "links.txt"
@@ -27,6 +28,11 @@ type TerminalEntry = {
   cwd: string
   output: string[]
 }
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+})
 
 const projects: Project[] = [
   {
@@ -221,49 +227,12 @@ const iconMap = {
   store: Store,
 }
 
-const carouselProjects = [...projects, ...projects, ...projects]
-
-const flowerPositions = [
-  "left-[2%] top-[14%] size-14 rotate-[-14deg]",
-  "left-[12%] top-[3%] size-20 rotate-[12deg]",
-  "left-[22%] top-[9%] size-14 rotate-[22deg]",
-  "left-[41%] top-[2%] size-18 rotate-[-5deg]",
-  "right-[24%] top-[10%] size-14 rotate-[18deg]",
-  "right-[11%] top-[4%] size-20 rotate-[-12deg]",
-  "right-[2%] top-[8%] size-14 rotate-[12deg]",
-  "left-[1%] bottom-[20%] size-16 rotate-[8deg]",
-  "left-[13%] bottom-[2%] size-18 rotate-[-10deg]",
-  "left-[41%] bottom-[-1%] size-16 rotate-[18deg]",
-  "right-[20%] bottom-[1%] size-16 rotate-[6deg]",
-  "right-[8%] bottom-[3%] size-18 rotate-[18deg]",
-  "right-[1%] bottom-[21%] size-16 rotate-[-8deg]",
-]
-
-function Flower({ className }: { className: string }) {
-  return (
-    <svg
-      className={`absolute text-[#e9bf64]/46 ${className}`}
-      viewBox="0 0 100 100"
-      fill="none"
-      aria-hidden="true"
-    >
-      <g stroke="currentColor" strokeWidth="1.25">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <ellipse
-            key={index}
-            cx="50"
-            cy="24"
-            rx="10"
-            ry="23"
-            transform={`rotate(${index * 30} 50 50)`}
-          />
-        ))}
-        <circle cx="50" cy="50" r="10" />
-        <circle cx="50" cy="50" r="4" />
-      </g>
-    </svg>
-  )
-}
+const carouselRepeatCount = 7
+const carouselMiddleSet = Math.floor(carouselRepeatCount / 2)
+const carouselMiddleStart = projects.length * carouselMiddleSet
+const carouselLowerBoundary = projects.length * 2
+const carouselUpperBoundary = projects.length * (carouselRepeatCount - 2)
+const carouselProjects = Array.from({ length: carouselRepeatCount }).flatMap(() => projects)
 
 const getHelpOutput = () => [
   "Commands:",
@@ -328,14 +297,17 @@ export function Projects() {
   const ref = useRef(null)
   const outputRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const carouselShellRef = useRef<HTMLDivElement | null>(null)
   const carouselRef = useRef<HTMLDivElement | null>(null)
   const carouselItemRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const carouselSettleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [view, setView] = useState<"terminal" | "browse">("terminal")
   const [cwd, setCwd] = useState("projects")
   const [command, setCommand] = useState("")
   const [selectedSlug, setSelectedSlug] = useState(projects[0].slug)
-  const [activeCarouselSlot, setActiveCarouselSlot] = useState(projects.length)
+  const [activeCarouselSlot, setActiveCarouselSlot] = useState(carouselMiddleStart)
+  const [carouselCenter, setCarouselCenter] = useState(0)
   const [history, setHistory] = useState<TerminalEntry[]>([
     {
       cwd: "projects",
@@ -361,7 +333,7 @@ export function Projects() {
     }
 
     const container = carouselRef.current
-    const middleItem = carouselItemRefs.current[projects.length]
+    const middleItem = carouselItemRefs.current[carouselMiddleStart]
 
     if (middleItem) {
       container.scrollLeft = middleItem.offsetLeft - container.clientWidth / 2 + middleItem.clientWidth / 2
@@ -370,11 +342,11 @@ export function Projects() {
 
   const selectedProject = getProject(selectedSlug) ?? projects[0]
 
-  const updateCarouselCenter = () => {
+  const getClosestCarouselIndex = () => {
     const container = carouselRef.current
 
     if (!container) {
-      return
+      return activeCarouselSlot
     }
 
     const containerCenter = container.scrollLeft + container.clientWidth / 2
@@ -395,6 +367,40 @@ export function Projects() {
       }
     })
 
+    return closestIndex
+  }
+
+  const updateCarouselCenter = () => {
+    const container = carouselRef.current
+
+    if (!container) {
+      return
+    }
+
+    let closestIndex = getClosestCarouselIndex()
+
+    if (closestIndex < carouselLowerBoundary) {
+      const currentItem = carouselItemRefs.current[closestIndex]
+      const matchingMiddleItem = carouselItemRefs.current[(closestIndex % projects.length) + carouselMiddleStart]
+
+      if (currentItem && matchingMiddleItem) {
+        container.scrollLeft += matchingMiddleItem.offsetLeft - currentItem.offsetLeft
+        closestIndex = (closestIndex % projects.length) + carouselMiddleStart
+      }
+    }
+
+    if (closestIndex >= carouselUpperBoundary) {
+      const currentItem = carouselItemRefs.current[closestIndex]
+      const matchingMiddleItem = carouselItemRefs.current[(closestIndex % projects.length) + carouselMiddleStart]
+
+      if (currentItem && matchingMiddleItem) {
+        container.scrollLeft -= currentItem.offsetLeft - matchingMiddleItem.offsetLeft
+        closestIndex = (closestIndex % projects.length) + carouselMiddleStart
+      }
+    }
+
+    setCarouselCenter(container.scrollLeft + container.clientWidth / 2)
+
     const project = carouselProjects[closestIndex]
 
     setActiveCarouselSlot(closestIndex)
@@ -403,6 +409,70 @@ export function Projects() {
       setSelectedSlug(project.slug)
     }
   }
+
+  const centerCarouselItem = (index: number, behavior: ScrollBehavior = "smooth") => {
+    const container = carouselRef.current
+    const item = carouselItemRefs.current[index]
+
+    if (!container || !item) {
+      return
+    }
+
+    container.scrollTo({
+      left: item.offsetLeft - container.clientWidth / 2 + item.clientWidth / 2,
+      behavior,
+    })
+
+    setActiveCarouselSlot(index)
+    setSelectedSlug(carouselProjects[index]?.slug ?? selectedSlug)
+  }
+
+  const settleCarouselToNearestItem = () => {
+    const closestIndex = getClosestCarouselIndex()
+    centerCarouselItem(closestIndex)
+  }
+
+  const handleCarouselWheel = (event: WheelEvent) => {
+    const container = carouselRef.current
+
+    if (!container) {
+      return
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    const scrollAmount = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+    container.scrollBy({
+      left: -scrollAmount * 0.72,
+      behavior: "smooth",
+    })
+    window.requestAnimationFrame(updateCarouselCenter)
+
+    if (carouselSettleTimer.current) {
+      clearTimeout(carouselSettleTimer.current)
+    }
+
+    carouselSettleTimer.current = setTimeout(settleCarouselToNearestItem, 180)
+  }
+
+  useEffect(() => {
+    if (view !== "browse" || !carouselShellRef.current) {
+      return
+    }
+
+    const container = carouselShellRef.current
+
+    container.addEventListener("wheel", handleCarouselWheel, { passive: false })
+
+    return () => {
+      if (carouselSettleTimer.current) {
+        clearTimeout(carouselSettleTimer.current)
+      }
+
+      container.removeEventListener("wheel", handleCarouselWheel)
+    }
+  }, [view])
 
   const runCommand = (rawCommand: string) => {
     const trimmedCommand = rawCommand.trim()
@@ -544,12 +614,7 @@ export function Projects() {
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,250,240,0.62)_0%,rgba(255,250,240,0.16)_32%,rgba(116,36,20,0.22)_100%)]" />
         </>
       ) : (
-        <>
-          <div className="pointer-events-none absolute inset-0 bg-[#fbf6ea]" />
-          {flowerPositions.map((position, index) => (
-            <Flower key={index} className={position} />
-          ))}
-        </>
+        <div className="pointer-events-none absolute inset-0 bg-[#fbf6ea]" />
       )}
 
       <motion.div
@@ -577,11 +642,13 @@ export function Projects() {
                   event.stopPropagation()
                   setView("browse")
                 }}
-                className="flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-white/18 bg-white/12 px-3 text-xs font-medium text-white/78 transition hover:bg-white/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                className="group flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/18 bg-white/12 text-xs font-medium text-white/78 transition-all duration-300 hover:w-[5.7rem] hover:justify-start hover:bg-white/20 hover:px-3 hover:text-white focus-visible:w-[5.7rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
                 aria-label="Switch to browse view"
               >
-                <Grid2X2 className="size-3.5" />
-                Browse
+                <Grid2X2 className="size-3.5 shrink-0" />
+                <span className="ml-0 max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 group-hover:ml-1.5 group-hover:max-w-16 group-hover:opacity-100 group-focus-visible:ml-1.5 group-focus-visible:max-w-16 group-focus-visible:opacity-100">
+                  Browse
+                </span>
               </button>
             </div>
 
@@ -630,31 +697,47 @@ export function Projects() {
           </div>
         ) : (
           <div className="w-full">
-            <h2 className="mb-5 text-center text-5xl font-black uppercase tracking-[0.18em] text-[#626992] md:text-6xl">
-              Project
-            </h2>
-
-            <div className="relative mx-auto flex min-h-[360px] w-full max-w-[1155px] flex-col justify-center overflow-hidden rounded-[999px] bg-[linear-gradient(180deg,#86aebe_0%,#e9be63_100%)] px-4 py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_22px_60px_rgba(83,72,52,0.18)] md:min-h-[470px] md:px-8">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.18),transparent_38%)]" />
+            <div className="mb-5 flex items-end justify-center gap-3">
+              <h2
+                className={`${instrumentSerif.className} scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#626992] md:text-7xl`}
+                style={{
+                  textShadow:
+                    "0.014em 0 0 currentColor, -0.014em 0 0 currentColor, 0 0.006em 0 currentColor",
+                }}
+              >
+                PROJECT
+              </h2>
               <button
                 type="button"
                 onClick={() => setView("terminal")}
-                className="absolute right-5 top-5 z-20 flex h-8 items-center gap-1.5 rounded-full border border-white/38 bg-white/22 px-3 text-xs font-semibold text-white/90 shadow-[0_10px_24px_rgba(83,72,52,0.12)] backdrop-blur transition hover:bg-white/32 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:right-9 md:top-8"
+                className="group mb-1 flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-[#626992]/20 bg-white/58 text-xs font-semibold text-[#626992] shadow-[0_8px_20px_rgba(83,72,52,0.12)] backdrop-blur transition-all duration-300 hover:w-[6.4rem] hover:justify-start hover:bg-white/78 hover:px-3 focus-visible:w-[6.4rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#626992]"
                 aria-label="Switch to terminal view"
               >
-                <Terminal className="size-3.5" />
-                Terminal
+                <Terminal className="size-3.5 shrink-0" />
+                <span className="ml-0 max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 group-hover:ml-1.5 group-hover:max-w-20 group-hover:opacity-100 group-focus-visible:ml-1.5 group-focus-visible:max-w-20 group-focus-visible:opacity-100">
+                  Terminal
+                </span>
               </button>
+            </div>
+
+            <div
+              ref={carouselShellRef}
+              className="relative mx-auto flex min-h-[205px] w-full max-w-[760px] flex-col justify-center overflow-hidden rounded-[999px] bg-[linear-gradient(180deg,#86aebe_0%,#e9be63_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_22px_60px_rgba(83,72,52,0.18)] md:min-h-[260px]"
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.18),transparent_38%)]" />
               <div
                 ref={carouselRef}
                 onScroll={updateCarouselCenter}
-                className="relative z-10 flex snap-x snap-mandatory gap-6 overflow-x-auto px-[32vw] py-10 [scrollbar-width:none] md:gap-10 md:px-[38%] [&::-webkit-scrollbar]:hidden"
+                className="absolute inset-y-0 left-5 right-5 z-10 flex items-center gap-3 overflow-x-auto overflow-y-hidden rounded-[inherit] overscroll-contain px-[21%] [scrollbar-width:none] md:left-8 md:right-8 md:gap-5 md:px-[25%] [&::-webkit-scrollbar]:hidden"
                 aria-label="Browse projects"
               >
                 {carouselProjects.map((project, index) => {
                   const Icon = iconMap[project.icon]
-                  const distance = Math.abs(index - activeCarouselSlot)
-                  const scale = distance === 0 ? 1.72 : distance === 1 ? 1.05 : 0.72
+                  const item = carouselItemRefs.current[index]
+                  const itemCenter = item ? item.offsetLeft + item.clientWidth / 2 : 0
+                  const distanceFromCenter = item ? Math.abs(carouselCenter - itemCenter) : Number.POSITIVE_INFINITY
+                  const circleSize = distanceFromCenter < 78 ? 160 : distanceFromCenter < 210 ? 110 : 62
+                  const iconSize = distanceFromCenter < 78 ? 68 : distanceFromCenter < 210 ? 48 : 28
 
                   return (
                     <button
@@ -663,12 +746,12 @@ export function Projects() {
                         carouselItemRefs.current[index] = node
                       }}
                       type="button"
-                      onClick={() => setSelectedSlug(project.slug)}
-                      className="grid size-28 shrink-0 snap-center place-items-center rounded-full border border-white/68 bg-white/10 text-white/82 shadow-[inset_0_1px_0_rgba(255,255,255,0.46)] transition-transform duration-200 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#626992] md:size-36"
-                      style={{ transform: `scale(${scale})` }}
+                      onClick={() => centerCarouselItem(index)}
+                      className="grid shrink-0 place-items-center rounded-full border border-white/68 bg-white/10 text-white/82 shadow-[inset_0_1px_0_rgba(255,255,255,0.46)] transition-[width,height,background-color] duration-200 ease-out hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#626992]"
+                      style={{ width: circleSize, height: circleSize }}
                       aria-label={`View ${project.name}`}
                     >
-                      <Icon className="size-10 md:size-14" strokeWidth={1.5} />
+                      <Icon style={{ width: iconSize, height: iconSize }} strokeWidth={1.5} />
                     </button>
                   )
                 })}
