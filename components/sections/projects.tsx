@@ -341,6 +341,7 @@ export function Projects() {
       cwd: "projects",
       output: [
         "Welcome to ~/projects.",
+        "Prefer a quick visual overview? Click Browse in the top right.",
         "Type `help` for commands, or start with `ls`.",
       ],
     },
@@ -557,40 +558,31 @@ export function Projects() {
         animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <div className="mb-5 flex items-center rounded-full border border-white/38 bg-white/46 p-1 shadow-[0_12px_34px_rgba(83,72,52,0.14)] backdrop-blur">
-          <button
-            type="button"
-            onClick={() => setView("terminal")}
-            className={`flex h-9 items-center gap-2 rounded-full px-4 text-sm font-medium transition ${
-              view === "terminal" ? "bg-[#5e668f] text-white shadow-sm" : "text-[#5e668f] hover:bg-white/58"
-            }`}
-          >
-            <Terminal className="size-4" />
-            Terminal
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("browse")}
-            className={`flex h-9 items-center gap-2 rounded-full px-4 text-sm font-medium transition ${
-              view === "browse" ? "bg-[#5e668f] text-white shadow-sm" : "text-[#5e668f] hover:bg-white/58"
-            }`}
-          >
-            <Grid2X2 className="size-4" />
-            Browse
-          </button>
-        </div>
-
         {view === "terminal" ? (
           <div
             className="flex h-[min(68vh,585px)] w-[min(78vw,988px)] flex-col overflow-hidden rounded-[10px] border border-white/24 bg-[#b98575]/58 shadow-[0_2px_4px_rgba(47,31,26,0.24),inset_0_1px_0_rgba(255,255,255,0.28)] backdrop-blur-[2px]"
             aria-label="Projects terminal"
             onClick={() => inputRef.current?.focus()}
           >
-            <div className="flex h-10 shrink-0 items-center gap-2 border-b border-white/16 bg-[#6d2b20]/26 px-4">
+            <div className="flex h-10 shrink-0 items-center gap-2 border-b border-white/16 bg-[#6d2b20]/26 py-0 pl-4 pr-1.5">
               <span className="h-3 w-3 rounded-full bg-[#d46a5f]" />
               <span className="h-3 w-3 rounded-full bg-[#e8bb67]" />
               <span className="h-3 w-3 rounded-full bg-[#9ebf86]" />
-              <span className="ml-3 text-xs text-white/58">annie@portfolio: {getPromptPath(cwd)}</span>
+              <span className="ml-3 min-w-0 flex-1 truncate text-xs text-white/58">
+                annie@portfolio: {getPromptPath(cwd)}
+              </span>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setView("browse")
+                }}
+                className="flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-white/18 bg-white/12 px-3 text-xs font-medium text-white/78 transition hover:bg-white/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                aria-label="Switch to browse view"
+              >
+                <Grid2X2 className="size-3.5" />
+                Browse
+              </button>
             </div>
 
             <div
@@ -644,6 +636,15 @@ export function Projects() {
 
             <div className="relative mx-auto flex min-h-[360px] w-full max-w-[1155px] flex-col justify-center overflow-hidden rounded-[999px] bg-[linear-gradient(180deg,#86aebe_0%,#e9be63_100%)] px-4 py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_22px_60px_rgba(83,72,52,0.18)] md:min-h-[470px] md:px-8">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.18),transparent_38%)]" />
+              <button
+                type="button"
+                onClick={() => setView("terminal")}
+                className="absolute right-5 top-5 z-20 flex h-8 items-center gap-1.5 rounded-full border border-white/38 bg-white/22 px-3 text-xs font-semibold text-white/90 shadow-[0_10px_24px_rgba(83,72,52,0.12)] backdrop-blur transition hover:bg-white/32 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:right-9 md:top-8"
+                aria-label="Switch to terminal view"
+              >
+                <Terminal className="size-3.5" />
+                Terminal
+              </button>
               <div
                 ref={carouselRef}
                 onScroll={updateCarouselCenter}
