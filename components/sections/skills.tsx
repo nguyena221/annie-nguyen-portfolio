@@ -67,7 +67,7 @@ export function Skills() {
       ref={ref}
       className="relative overflow-hidden bg-[#88b8ce] px-6 py-20 text-[#542916] md:px-12 md:py-28 lg:px-24"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(254,250,240,0.68),transparent_28%),radial-gradient(circle_at_86%_80%,rgba(241,193,102,0.36),transparent_32%),linear-gradient(180deg,rgba(136,184,206,0.92),rgba(183,152,88,0.34))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(254,250,240,0.68),transparent_28%),radial-gradient(circle_at_86%_80%,rgba(161,58,30,0.3),transparent_31%),radial-gradient(circle_at_12%_88%,rgba(241,193,102,0.28),transparent_28%),linear-gradient(180deg,rgba(136,184,206,0.88),rgba(161,58,30,0.2))]" />
       <Image
         src="/images/loading/ripped-paper-tape.png"
         alt=""
@@ -107,8 +107,8 @@ export function Skills() {
             </h2>
           </div>
 
-          <div className="relative rounded-[8px] border border-[#542916]/18 bg-[#fefaf0]/82 p-5 shadow-[0_16px_36px_rgba(84,41,22,0.16)] backdrop-blur">
-            <div className="absolute -top-5 left-8 h-9 w-28 rotate-[-4deg] bg-[#f1c166]/78 shadow-[0_5px_14px_rgba(84,41,22,0.14)]" />
+          <div className="relative rounded-[8px] border border-[#a13a1e]/24 bg-[#fefaf0]/82 p-5 shadow-[0_16px_36px_rgba(84,41,22,0.18)] backdrop-blur">
+            <div className="absolute -top-5 left-8 h-9 w-28 rotate-[-4deg] bg-[#a13a1e]/28 shadow-[0_5px_14px_rgba(84,41,22,0.14)]" />
             <p className="relative text-sm leading-6 text-[#542916] md:text-base">
               I usually work across product UI, mobile app flows, backend data, and the tools that keep projects
               organized from prototype to deployment.
@@ -122,7 +122,7 @@ export function Skills() {
               initial={{ opacity: 0, x: -24 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-              className="relative min-h-[245px] rounded-[8px] border border-[#542916]/18 bg-[#fefaf0] p-6 shadow-[0_18px_42px_rgba(84,41,22,0.18)] md:p-7"
+              className="relative min-h-[245px] rounded-[8px] border border-[#a13a1e]/24 bg-[#fefaf0] p-6 shadow-[0_18px_42px_rgba(84,41,22,0.2)] md:p-7"
             >
             <Image
               src="/images/loading/paper-clip.png"
@@ -141,7 +141,7 @@ export function Skills() {
                     initial={{ opacity: 0, y: 12, rotate: index % 2 === 0 ? -2 : 2 }}
                     animate={isInView ? { opacity: 1, y: 0, rotate: index % 2 === 0 ? -2 : 2 } : {}}
                     transition={{ duration: 0.35, delay: 0.18 + index * 0.04 }}
-                    className="rounded-[6px] border border-[#b79858]/70 bg-[#fefaf0] px-3 py-2 text-sm font-semibold text-[#542916] shadow-[0_4px_0_rgba(161,58,30,0.16)]"
+                    className="rounded-[6px] border border-[#a13a1e]/36 bg-[#fff6ec] px-3 py-2 text-sm font-semibold text-[#542916] shadow-[0_4px_0_rgba(161,58,30,0.18)]"
                   >
                     {skill}
                   </motion.span>
@@ -183,7 +183,7 @@ function SkillCard({
       initial={{ opacity: 0, y: 24, rotate: 0 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.48, delay: 0.08 + index * 0.08, ease: "easeOut" }}
-      className={`relative rounded-[8px] border border-[#542916]/16 bg-[#fefaf0]/88 p-5 shadow-[0_12px_30px_rgba(84,41,22,0.14)] backdrop-blur transition-transform duration-300 hover:-translate-y-1 ${group.rotate}`}
+      className={`relative rounded-[8px] border border-[#a13a1e]/20 bg-[#fefaf0]/90 p-5 shadow-[0_12px_30px_rgba(84,41,22,0.16)] backdrop-blur transition-transform duration-300 hover:-translate-y-1 ${group.rotate}`}
     >
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -192,14 +192,14 @@ function SkillCard({
           </span>
           <h3 className="text-sm font-black uppercase tracking-[0.16em] text-[#542916]">{group.title}</h3>
         </div>
-        <span className="h-3 w-3 rounded-full border border-[#542916]/20 bg-[#f1c166]" />
+        <span className="h-3 w-3 rounded-full border border-[#542916]/20 bg-[#a13a1e]" />
       </div>
 
       <div className="flex flex-wrap gap-2">
         {group.skills.map((skill) => (
           <span
             key={skill}
-            className="rounded-full border border-[#b79858]/65 bg-[#fefaf0] px-3 py-1.5 text-xs font-semibold text-[#542916]"
+            className="rounded-full border border-[#a13a1e]/26 bg-[#fff6ec] px-3 py-1.5 text-xs font-semibold text-[#542916]"
           >
             {skill}
           </span>

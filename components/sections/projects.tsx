@@ -605,16 +605,19 @@ export function Projects() {
       id="projects"
       ref={ref}
       className={`relative flex min-h-[100svh] items-center justify-center px-6 py-16 transition-colors duration-500 md:px-12 lg:px-24 ${
-        view === "browse" ? "overflow-x-hidden bg-[#fbf6ea]" : "overflow-hidden bg-[#a8462d] lg:h-[100svh]"
+        view === "browse" ? "overflow-x-hidden bg-[#f8ddd2]" : "overflow-hidden bg-[#f8ddd2] lg:h-[100svh]"
       }`}
     >
       {view === "terminal" ? (
         <>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_92%,#fffaf0_0%,#f4ded0_18%,#c8836b_48%,#a8462d_100%)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,250,240,0.62)_0%,rgba(255,250,240,0.16)_32%,rgba(116,36,20,0.22)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(254,250,240,0.95)_0%,rgba(241,193,102,0.26)_24%,transparent_48%),radial-gradient(circle_at_84%_82%,rgba(161,58,30,0.28)_0%,transparent_36%),linear-gradient(135deg,#fefaf0_0%,#f8ddd2_42%,#d98572_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(254,250,240,0.6)_0%,rgba(161,58,30,0.12)_42%,rgba(84,41,22,0.16)_100%)]" />
         </>
       ) : (
-        <div className="pointer-events-none absolute inset-0 bg-[#fbf6ea]" />
+        <>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(254,250,240,0.95)_0%,rgba(241,193,102,0.26)_24%,transparent_48%),radial-gradient(circle_at_84%_82%,rgba(161,58,30,0.28)_0%,transparent_36%),linear-gradient(135deg,#fefaf0_0%,#f8ddd2_42%,#d98572_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(254,250,240,0.6)_0%,rgba(161,58,30,0.12)_42%,rgba(84,41,22,0.16)_100%)]" />
+        </>
       )}
 
       <motion.div
@@ -625,15 +628,15 @@ export function Projects() {
       >
         {view === "terminal" ? (
           <div
-            className="flex h-[min(68vh,585px)] w-[min(78vw,988px)] flex-col overflow-hidden rounded-[10px] border border-white/24 bg-[#b98575]/58 shadow-[0_2px_4px_rgba(47,31,26,0.24),inset_0_1px_0_rgba(255,255,255,0.28)] backdrop-blur-[2px]"
+            className="flex h-[min(68vh,585px)] w-[min(78vw,988px)] flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px]"
             aria-label="Projects terminal"
             onClick={() => inputRef.current?.focus()}
           >
-            <div className="flex h-10 shrink-0 items-center gap-2 border-b border-white/16 bg-[#6d2b20]/26 py-0 pl-4 pr-1.5">
+            <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#a13a1e]/18 bg-[#fefaf0]/22 py-0 pl-4 pr-1.5">
               <span className="h-3 w-3 rounded-full bg-[#d46a5f]" />
               <span className="h-3 w-3 rounded-full bg-[#e8bb67]" />
               <span className="h-3 w-3 rounded-full bg-[#9ebf86]" />
-              <span className="ml-3 min-w-0 flex-1 truncate text-xs text-white/58">
+              <span className="ml-3 min-w-0 flex-1 truncate text-xs text-[#542916]/62">
                 annie@portfolio: {getPromptPath(cwd)}
               </span>
               <button
@@ -642,7 +645,7 @@ export function Projects() {
                   event.stopPropagation()
                   setView("browse")
                 }}
-                className="group flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/18 bg-white/12 text-xs font-medium text-white/78 transition-all duration-300 hover:w-[5.7rem] hover:justify-start hover:bg-white/20 hover:px-3 hover:text-white focus-visible:w-[5.7rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                className="group flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#a13a1e]/20 bg-[#fefaf0]/42 text-xs font-medium text-[#542916]/78 transition-all duration-300 hover:w-[5.7rem] hover:justify-start hover:bg-[#fefaf0]/70 hover:px-3 hover:text-[#542916] focus-visible:w-[5.7rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a13a1e]/60"
                 aria-label="Switch to browse view"
               >
                 <Grid2X2 className="size-3.5 shrink-0" />
@@ -654,21 +657,21 @@ export function Projects() {
 
             <div
               ref={outputRef}
-              className="min-h-0 flex-1 overflow-y-auto p-5 font-mono text-[0.72rem] leading-relaxed text-[#fff7e8] md:p-7 md:text-sm"
+              className="min-h-0 flex-1 overflow-y-auto p-5 font-mono text-[0.72rem] leading-relaxed text-[#542916] md:p-7 md:text-sm"
             >
               {history.map((entry, index) => (
                 <div key={`${entry.cwd}-${entry.command ?? "intro"}-${index}`} className={index ? "mt-4" : ""}>
                   {entry.command !== undefined && (
                     <p>
-                      <span className="text-[#f1d18b]">annie@portfolio</span>
-                      <span className="text-white/48">:</span>
-                      <span className="text-[#bfe3a4]">{getPromptPath(entry.cwd)}</span>
-                      <span className="text-white/48"> % </span>
+                      <span className="text-[#a13a1e]">annie@portfolio</span>
+                      <span className="text-[#542916]/42">:</span>
+                      <span className="text-[#6f7b57]">{getPromptPath(entry.cwd)}</span>
+                      <span className="text-[#542916]/42"> % </span>
                       {entry.command}
                     </p>
                   )}
                   {entry.output.length > 0 && (
-                    <pre className="mt-1 whitespace-pre-wrap break-words text-white/88">{entry.output.join("\n")}</pre>
+                    <pre className="mt-1 whitespace-pre-wrap break-words text-[#542916]/88">{entry.output.join("\n")}</pre>
                   )}
                 </div>
               ))}
@@ -676,18 +679,18 @@ export function Projects() {
 
             <form
               onSubmit={handleSubmit}
-              className="flex shrink-0 items-center border-t border-white/14 bg-black/12 px-5 py-3 font-mono text-[0.72rem] text-[#fff7e8] md:px-7 md:text-sm"
+              className="flex shrink-0 items-center border-t border-[#a13a1e]/14 bg-[#fefaf0]/24 px-5 py-3 font-mono text-[0.72rem] text-[#542916] md:px-7 md:text-sm"
             >
-              <span className="text-[#f1d18b]">annie@portfolio</span>
-              <span className="text-white/48">:</span>
-              <span className="text-[#bfe3a4]">{getPromptPath(cwd)}</span>
-              <span className="text-white/48"> % </span>
+              <span className="text-[#a13a1e]">annie@portfolio</span>
+              <span className="text-[#542916]/42">:</span>
+              <span className="text-[#6f7b57]">{getPromptPath(cwd)}</span>
+              <span className="text-[#542916]/42"> % </span>
               <input
                 ref={inputRef}
                 value={command}
                 onChange={(event) => setCommand(event.target.value)}
                 onKeyDown={handleCommandKeyDown}
-                className="ml-1 min-w-0 flex-1 bg-transparent text-white outline-none placeholder:text-white/36"
+                className="ml-1 min-w-0 flex-1 bg-transparent text-[#542916] outline-none placeholder:text-[#542916]/38"
                 placeholder="type a command"
                 spellCheck={false}
                 autoComplete="off"
@@ -699,10 +702,10 @@ export function Projects() {
           <div className="w-full">
             <div className="mb-5 flex items-end justify-center gap-3">
               <h2
-                className={`${instrumentSerif.className} scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#626992] md:text-7xl`}
+                className={`${instrumentSerif.className} scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#542916] md:text-7xl`}
                 style={{
                   textShadow:
-                    "0.014em 0 0 currentColor, -0.014em 0 0 currentColor, 0 0.006em 0 currentColor",
+                    "0.014em 0 0 currentColor, -0.014em 0 0 currentColor, 0 0.006em 0 currentColor, 0 8px 24px rgba(254,250,240,0.52)",
                 }}
               >
                 PROJECT
@@ -710,7 +713,7 @@ export function Projects() {
               <button
                 type="button"
                 onClick={() => setView("terminal")}
-                className="group mb-1 flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-[#626992]/20 bg-white/58 text-xs font-semibold text-[#626992] shadow-[0_8px_20px_rgba(83,72,52,0.12)] backdrop-blur transition-all duration-300 hover:w-[6.4rem] hover:justify-start hover:bg-white/78 hover:px-3 focus-visible:w-[6.4rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#626992]"
+                className="group mb-1 flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-[#a13a1e]/20 bg-[#fefaf0]/52 text-xs font-semibold text-[#542916] shadow-[0_8px_20px_rgba(84,41,22,0.13)] backdrop-blur transition-all duration-300 hover:w-[6.4rem] hover:justify-start hover:bg-[#fefaf0]/80 hover:px-3 focus-visible:w-[6.4rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a13a1e]"
                 aria-label="Switch to terminal view"
               >
                 <Terminal className="size-3.5 shrink-0" />
@@ -722,9 +725,9 @@ export function Projects() {
 
             <div
               ref={carouselShellRef}
-              className="relative mx-auto flex min-h-[205px] w-full max-w-[760px] flex-col justify-center overflow-hidden rounded-[999px] bg-[linear-gradient(180deg,#86aebe_0%,#e9be63_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_22px_60px_rgba(83,72,52,0.18)] md:min-h-[260px]"
+              className="relative mx-auto flex min-h-[205px] w-full max-w-[760px] flex-col justify-center overflow-hidden rounded-[999px] border border-[#a13a1e]/18 bg-[linear-gradient(180deg,#d98572_0%,#a13a1e_100%)] shadow-[inset_0_1px_0_rgba(254,250,240,0.36),0_22px_60px_rgba(84,41,22,0.18)] md:min-h-[260px]"
             >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.18),transparent_38%)]" />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(254,250,240,0.28),transparent_38%),radial-gradient(circle_at_18%_82%,rgba(241,193,102,0.18),transparent_30%)]" />
               <div
                 ref={carouselRef}
                 onScroll={updateCarouselCenter}
@@ -747,7 +750,7 @@ export function Projects() {
                       }}
                       type="button"
                       onClick={() => centerCarouselItem(index)}
-                      className="grid shrink-0 place-items-center rounded-full border border-white/68 bg-white/10 text-white/82 shadow-[inset_0_1px_0_rgba(255,255,255,0.46)] transition-[width,height,background-color] duration-200 ease-out hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#626992]"
+                      className="grid shrink-0 place-items-center rounded-full border border-[#fefaf0]/62 bg-[#fefaf0]/18 text-[#fefaf0]/92 shadow-[inset_0_1px_0_rgba(254,250,240,0.42)] transition-[width,height,background-color] duration-200 ease-out hover:bg-[#fefaf0]/28 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#fefaf0]"
                       style={{ width: circleSize, height: circleSize }}
                       aria-label={`View ${project.name}`}
                     >
@@ -760,19 +763,19 @@ export function Projects() {
 
             <motion.div
               key={selectedProject.slug}
-              className="mx-auto mt-7 max-w-4xl rounded-[8px] border border-[#d5bd83]/58 bg-[#fffaf0]/82 p-5 text-[#4f5683] shadow-[0_16px_42px_rgba(83,72,52,0.13)] backdrop-blur md:p-6"
+              className="mx-auto mt-7 max-w-4xl rounded-[8px] border border-[#a13a1e]/16 bg-[#fefaf0]/86 p-5 text-[#542916] shadow-[0_16px_42px_rgba(84,41,22,0.16)] backdrop-blur md:p-6"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#b87461]">
+                  <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#a13a1e]">
                     <span>{selectedProject.status}</span>
                     <span aria-hidden="true">/</span>
                     <span>{selectedProject.period}</span>
                   </div>
-                  <h3 className="text-2xl font-black tracking-normal text-[#626992] md:text-3xl">
+                  <h3 className="text-2xl font-black tracking-normal text-[#542916] md:text-3xl">
                     {selectedProject.name}
                   </h3>
                   <p className="mt-3 max-w-2xl text-sm leading-6 md:text-base">{selectedProject.summary}</p>
@@ -784,7 +787,7 @@ export function Projects() {
                       href={selectedProject.links.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="grid size-10 place-items-center rounded-full bg-[#626992] text-white transition hover:bg-[#4f5683]"
+                      className="grid size-10 place-items-center rounded-full bg-[#542916] text-[#fefaf0] transition hover:bg-[#a13a1e]"
                       aria-label={`${selectedProject.name} GitHub`}
                     >
                       <Github className="size-4" />
@@ -795,7 +798,7 @@ export function Projects() {
                       href={selectedProject.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="grid size-10 place-items-center rounded-full bg-[#b87461] text-white transition hover:bg-[#a26353]"
+                      className="grid size-10 place-items-center rounded-full bg-[#a13a1e] text-[#fefaf0] transition hover:bg-[#542916]"
                       aria-label={`${selectedProject.name} live site`}
                     >
                       <ExternalLink className="size-4" />
@@ -806,7 +809,7 @@ export function Projects() {
 
               <div className="mt-5 flex flex-wrap gap-2">
                 {selectedProject.stack.map((item) => (
-                  <span key={item} className="rounded-full bg-[#e9bf64]/28 px-3 py-1 text-xs font-semibold text-[#626992]">
+                  <span key={item} className="rounded-full bg-[#f1c166]/28 px-3 py-1 text-xs font-semibold text-[#542916]">
                     {item}
                   </span>
                 ))}
@@ -814,8 +817,8 @@ export function Projects() {
 
               <div className="mt-5 grid gap-3 md:grid-cols-3">
                 {selectedProject.highlights.map((highlight) => (
-                  <div key={highlight} className="flex gap-2 text-sm leading-5 text-[#4f5683]">
-                    <Sparkles className="mt-0.5 size-4 shrink-0 text-[#b87461]" />
+                  <div key={highlight} className="flex gap-2 text-sm leading-5 text-[#542916]">
+                    <Sparkles className="mt-0.5 size-4 shrink-0 text-[#a13a1e]" />
                     <span>{highlight}</span>
                   </div>
                 ))}
