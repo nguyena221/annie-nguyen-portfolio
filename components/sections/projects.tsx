@@ -1,7 +1,21 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { CalendarDays, ExternalLink, Github, Grid2X2, MonitorSmartphone, Sparkles, Store, Terminal } from "lucide-react"
+import {
+  BrainCircuit,
+  CalendarDays,
+  CloudSun,
+  Database,
+  ExternalLink,
+  Github,
+  Grid2X2,
+  ListChecks,
+  MonitorSmartphone,
+  ShoppingBasket,
+  Sparkles,
+  Store,
+  Terminal,
+} from "lucide-react"
 import { Instrument_Serif } from "next/font/google"
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react"
 
@@ -12,7 +26,7 @@ type Project = {
   slug: string
   period: string
   status: string
-  icon: "calendar" | "mobile" | "store"
+  icon: "calendar" | "mobile" | "store" | "tasks" | "classifier" | "weather" | "data" | "grocery"
   summary: string
   stack: string[]
   highlights: string[]
@@ -29,6 +43,13 @@ type TerminalEntry = {
   output: string[]
 }
 
+type ProjectDetails = {
+  summary: string
+  context: string
+  role: string
+  learned: string
+}
+
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
@@ -38,33 +59,35 @@ const projects: Project[] = [
   {
     name: "Daily Grid",
     slug: "daily-grid",
-    period: "2026",
-    status: "MVP in progress / Unfinished",
+    period: "Winter 2025",
+    status: "MVP in progress",
     icon: "calendar",
     summary:
-      "A customizable visual planner that helps users organize their week while personalizing their workspace with stickers, notes, colors, and scrapbook-style layouts.",
+      "An in-progress visual weekly planner for organizing tasks, events, and routines through personalized daily and weekly views.",
     stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "Zustand", "date-fns"],
     highlights: [
-      "Built a modern React and TypeScript planning interface",
-      "Designed weekly and daily planning views with task and event structure",
-      "Planned scrapbook-style customization and AI-assisted weekly planning features",
+      "Designed early weekly and daily planning views",
+      "Added task, event, and completion-tracking functionality",
+      "Planned AI scheduling and scrapbook-style customization features",
     ],
     links: {
       github: "https://github.com/nguyena221/DailyGrid",
     },
     files: {
       "README.md": `# Daily Grid
-MVP in progress / Unfinished · 2026 · React, TypeScript, Vite, Tailwind CSS, Zustand, date-fns
+MVP in progress · Winter 2025 · React, TypeScript, Vite, Tailwind CSS, Zustand, date-fns
 
-Daily Grid is a React and TypeScript planning app designed to make productivity feel more personal, visual, and motivating. The app helps users organize tasks, events, and daily responsibilities through weekly and daily planning views, while also allowing them to customize their workspace with aesthetic elements like stickers, sticky notes, color themes, and scrapbook-style decorations.
+Daily Grid is an unfinished visual weekly planner app designed to help users organize tasks, events, and routines into a balanced weekly schedule. It focuses on personalized daily and weekly views, task tracking, and future AI-assisted planning.
 
-A major goal of the project is to move beyond a standard task manager by giving users a planner that feels curated to their own personality, habits, and visual style. Although the project is still in progress, I am building it as a flexible productivity tool that combines organization, creativity, and personal expression.`,
-      "features.txt": `- Weekly and daily planning views
-- Task and event management structure
-- Completion tracking for productivity progress
-- Customizable color themes and visual workspace elements
-- Planned stickers, sticky notes, and scrapbook-style layout personalization
-- Planned AI-assisted weekly planning features`,
+I created Daily Grid because I enjoy planners, to-do lists, and visual organization tools, but wanted something more customizable than a basic calendar. I am building the project independently, including the frontend structure, planner layout, task and event management, completion tracking, and overall design direction.
+
+Building a larger React and TypeScript frontend has shown me how complex planning interfaces can be. My next steps are to finish the core task and event flow, improve the weekly planner UI, and add personalization through stickers, sticky notes, colors, and scrapbook-inspired layouts.`,
+      "features.txt": `- Visual weekly planner layout
+- Early weekly and daily planning views
+- Task and event management
+- Completion tracking for planned tasks
+- Planned AI-generated weekly scheduling
+- Planned stickers, sticky notes, colors, and aesthetic layouts`,
       "stack.json": `{
   "frontend": ["React", "TypeScript", "Vite"],
   "styling": ["Tailwind CSS"],
@@ -72,15 +95,10 @@ A major goal of the project is to move beyond a standard task manager by giving 
   "dates": ["date-fns"],
   "tools": ["Git", "GitHub", "VS Code"]
 }`,
-      "highlights.txt": `- Built a modern React + TypeScript planning interface
-- Designed weekly and daily planning views
-- Added task and event management structure
-- Planned scrapbook-style customization with stickers, sticky notes, themes, and layout personalization
-- Designed the app around user-specific aesthetics and personal productivity styles
-- Included completion tracking for productivity progress
-- Planned AI-assisted weekly planning features
-- Used Zustand for lightweight state management
-- Used date-fns for date handling and scheduling logic`,
+      "highlights.txt": `- Independently building the frontend and overall design direction
+- Structured the project as an MVP that can grow over time
+- Practiced balancing productivity features with creative customization
+- Used Zustand for state management and date-fns for scheduling logic`,
       "structure.txt": `daily-grid/
 ├── src/
 ├── components/
@@ -99,29 +117,28 @@ github: https://github.com/nguyena221/DailyGrid`,
     status: "Completed",
     icon: "mobile",
     summary:
-      "A React Native dating app that helps people connect through personality games, lifestyle preferences, shared interests, and real-time chat.",
-    stack: ["React Native", "Expo", "Firebase", "Firestore", "JavaScript"],
+      "A personality-first dating app prototype that uses quizzes and interactive profiles to help users match beyond basic photos.",
+    stack: ["JavaScript", "React Native", "Expo Go", "Firebase"],
     highlights: [
-      "Built authentication, profile customization, discovery, and messaging flows",
-      "Created quizzes that unlock traits users can add to their profiles",
-      "Turned a first full mobile app from concept into a working product",
+      "Built the Home, Discover, Message, and Profile screens",
+      "Created editable profiles, preference filters, and compatibility matching",
+      "Implemented real-time messaging with Firebase",
     ],
     links: {
-      github: "https://github.com/nguyena221/DatingApp/tree/main",
+      github: "https://github.com/nguyena221/DatingApp",
     },
     files: {
       "README.md": `# GameDate
-Completed · Summer 2025 · React Native, Expo, Firebase
+Completed · Summer 2025 · JavaScript, React Native, Expo Go, Firebase
 
-GameDate is a mobile dating app designed to help users connect through personality, lifestyle preferences, and shared interests rather than relying only on appearance. Users play personality games and quizzes to unlock traits, then add those traits to their profiles.
+GameDate is a personality-first dating app prototype that uses quizzes and interactive profile features to help users match beyond basic photos. Quizzes unlock traits for profiles, while other sections let users share travel, food, and lifestyle interests.
 
-I built GameDate as a full-stack mobile app to explore how mobile design, user data, and backend services can work together to create a more thoughtful matching experience. The app includes authentication, profile customization, personality and lifestyle quizzes, discovery, real-time messaging, and custom matching features.`,
-      "features.txt": `- User authentication and profile setup
-- Personality and lifestyle quizzes
-- Dynamic profiles based on quiz results and preferences
-- Discover page for browsing potential matches
-- Real-time messaging and chat rooms
-- Custom profile widgets for books, movies, destinations, food spots, goals, hobbies, and more`,
+The project was completed with another developer in one month for a class. I built the core UI screens, set up Firebase, worked on message storage, and helped implement customizable profiles. The tight deadline taught me how to divide work, communicate consistently, test a teammate's changes, and deliver a functioning mobile app.`,
+      "features.txt": `- Editable user profiles with photos and personality traits
+- Explore filters for age, gender, and preferences
+- Custom compatibility-based matching system
+- Real-time messaging using Firebase
+- Interactive profile sections for interests and preferences`,
       "stack.json": `{
   "frontend": ["React Native", "Expo", "JavaScript"],
   "navigation": ["React Navigation"],
@@ -129,11 +146,10 @@ I built GameDate as a full-stack mobile app to explore how mobile design, user d
   "backend": ["Firebase", "Firestore", "Firebase Authentication"],
   "tools": ["Git", "GitHub", "VS Code", "Expo Go", "Expo CLI"]
 }`,
-      "highlights.txt": `- Built a full mobile app for the first time
-- Learned JavaScript while building the project
-- Created personality games that unlock profile traits
-- Built messaging, discovery, profile, and game dashboard pages
-- Turned an app idea from concept into a working product`,
+      "highlights.txt": `- Built the Home, Discover, Message, and Profile screens
+- Set up Firebase and backend storage for messages
+- Collaborated with another developer under a one-month deadline
+- Learned React Native, Expo Go, Firebase, and mobile app workflows`,
       "structure.txt": `DatingApp/
 ├── assets/
 ├── backend/
@@ -148,51 +164,49 @@ I built GameDate as a full-stack mobile app to explore how mobile design, user d
 ├── index.js
 ├── package.json
 └── package-lock.json`,
-      "links.txt": `github: https://github.com/nguyena221/DatingApp/tree/main`,
+      "links.txt": `github: https://github.com/nguyena221/DatingApp
+demo: Coming soon`,
     },
   },
   {
     name: "Pro Nails Website",
     slug: "pro-nails-website",
-    period: "2024",
-    status: "Live / Deployed",
+    period: "Winter 2025",
+    status: "Completed / Continuously updated",
     icon: "store",
     summary:
-      "A responsive business website for Pro Nails in Waynesboro, Virginia, built to make services, hours, gallery photos, and location details easier to find.",
+      "An online platform for a local nail salon that presents its mission, services, pricing, contact information, and work gallery.",
     stack: ["HTML", "CSS", "JavaScript", "Vercel"],
     highlights: [
-      "Designed and launched a responsive multi-page website for a real local business",
-      "Built service, gallery, contact, and location pages with an embedded map",
-      "Improved the salon's online presence with clearer navigation and mobile layouts",
+      "Created a responsive homepage and gallery showcasing salon work",
+      "Built an accurate service menu with pricing and descriptions",
+      "Deployed the site and continue to maintain it for the business",
     ],
     links: {
-      live: "https://pronails.vercel.app/index.html",
+      live: "https://pronails.vercel.app/",
       github: "https://github.com/nguyena221/pronails",
     },
     files: {
       "README.md": `# Pro Nails Website
-Live / Deployed · 2024 · HTML, CSS, JavaScript
+Completed / Continuously updated · Winter 2025 · HTML, CSS, JavaScript, Vercel
 
-Pro Nails Website is a responsive business website built for Pro Nails in Waynesboro, Virginia. It was created to modernize the salon's online presence and make service, location, and contact information easier for customers to access.
+The Pro Nails Website is an online platform for a local nail salon. It showcases the company's mission, service menu, contact information, and a gallery of the salon's work, giving customers an easy way to find services, prices, examples, and business details.
 
-I helped design and develop pages for services, business information, contact details, image gallery, and location. The site focuses on usability, mobile responsiveness, and clear presentation of important customer information such as hours, social links, and directions.`,
-      "features.txt": `- Responsive pages for service, gallery, contact, and location information
-- Clear presentation of hours, services, social links, and directions
-- Embedded Google Map for customer navigation
-- Mobile-friendly layout for customers browsing on phones
-- Cleaner, easier-to-navigate replacement for an outdated web presence`,
+I was the sole developer and worked directly with the business to translate its needs into an accessible, user-friendly website. I designed and programmed the site, verified its information, handled deployment, and continue to make updates. This first client project taught me that web development also depends on listening, communicating clearly, and organizing information for real users.`,
+      "features.txt": `- Homepage and gallery showcasing nail designs and salon work
+- Service menu with accurate pricing and descriptions
+- Contact details, location, and salon mission
+- Responsive layout across screen sizes
+- Deployment and ongoing maintenance`,
       "stack.json": `{
   "frontend": ["HTML", "CSS", "JavaScript"],
   "deployment": ["Vercel"],
   "tools": ["Git", "GitHub"]
 }`,
-      "highlights.txt": `- Designed and launched a responsive multi-page business website
-- Built service, contact, gallery, and location sections
-- Added an embedded Google Map for easier customer navigation
-- Improved image handling and front-end performance
-- Used Git/GitHub for version control
-- Deployed the final website with Vercel
-- Built for a real local business with real customer needs`,
+      "highlights.txt": `- Sole developer working directly with a real client
+- Designed layouts and programmed the site with HTML, CSS, and JavaScript
+- Turned client expectations into a professional online presence
+- Learned deployment, post-launch maintenance, and client communication`,
       "structure.txt": `pro-nails-website/
 ├── index.html
 ├── services.html
@@ -202,11 +216,311 @@ I helped design and develop pages for services, business information, contact de
 ├── js/
 ├── images/
 └── README.md`,
-      "links.txt": `live: https://pronails.vercel.app/index.html
+      "links.txt": `live: https://pronails.vercel.app/
 github: https://github.com/nguyena221/pronails`,
     },
   },
+  {
+    name: "Task Manager",
+    slug: "task-manager",
+    period: "Summer 2025",
+    status: "Completed",
+    icon: "tasks",
+    summary: "A clean mobile task manager for creating, editing, completing, and deleting tasks without unnecessary complexity.",
+    stack: [
+      "JavaScript",
+      "React Native",
+      "Expo",
+      "React Native Paper",
+      "React Native Modal",
+      "Expo Vector Icons",
+      "React Native Responsive Fontsize",
+    ],
+    highlights: [
+      "Built task creation, editing, completion, and deletion flows",
+      "Created a scrollable task list, add-task modal, and info popup",
+      "Separated the app into reusable components as it grew",
+    ],
+    links: { github: "https://github.com/nguyena221/TaskManager" },
+    files: {
+      "README.md": `# Task Manager
+Completed · Summer 2025 · JavaScript, React Native, Expo
+
+Task Manager is a simple mobile productivity app that lets users create tasks with descriptions, mark them complete or incomplete, edit them, and delete them. I wanted to practice mobile development by making the to-do workflow quick and easy without an overly complicated interface.
+
+I built the main interface, task list, add-task modal, edit and delete actions, completion behavior, and info popup. As the feature set grew, I separated the app into smaller components, which strengthened my understanding of state management, data flow, and maintainable React Native UI.`,
+      "features.txt": `- Add tasks with short descriptions
+- Edit existing tasks
+- Complete or reopen tasks with visual feedback
+- Delete tasks from the list
+- Scrollable task list and explanatory info popup`,
+      "stack.json": `{
+  "frontend": ["JavaScript", "React Native", "Expo"],
+  "ui": ["React Native Paper", "React Native Modal", "Expo Vector Icons"],
+  "responsiveText": ["React Native Responsive Fontsize"]
+}`,
+      "highlights.txt": `- Built the app's primary interface and task functionality
+- Practiced state management and passing data between components
+- Created interactive buttons, modals, icons, and task cards
+- Improved maintainability by extracting smaller components`,
+      "structure.txt": `TaskManager/
+├── components/
+├── assets/
+├── App.js
+├── app.json
+└── package.json`,
+      "links.txt": `github: https://github.com/nguyena221/TaskManager`,
+    },
+  },
+  {
+    name: "Naïve Bayes Spam Classifier",
+    slug: "naive-bayes-spam-classifier",
+    period: "Spring 2026",
+    status: "Completed",
+    icon: "classifier",
+    summary: "A Flask web app that classifies messages as spam or ham and exposes the model's probability output and training data.",
+    stack: ["Python", "Flask", "HTML", "CSS", "CSV"],
+    highlights: [
+      "Implemented a Naïve Bayes spam-versus-ham classifier",
+      "Displayed prediction probabilities and the training dataset",
+      "Enabled new labeled data to dynamically retrain the model",
+    ],
+    links: { github: "https://github.com/nguyena221/na-ve-bayes-spam-classifier" },
+    files: {
+      "README.md": `# Naïve Bayes Spam Classifier
+Completed · Spring 2026 · Python, Flask, HTML, CSS, CSV
+
+Naïve Bayes Spam Classifier is a web app that classifies messages as spam or ham. Users can enter a message, see the prediction and probability output, inspect the training dataset, and add labeled examples to improve the model.
+
+I built the Flask app, connected its dataset, implemented the prediction workflow, and organized the backend, template, styling, and data files. Working with a small dataset highlighted how strongly model accuracy depends on training-data quality while helping me connect probability, text classification, and web development.`,
+      "features.txt": `- Message input for spam or ham classification
+- Naïve Bayes prediction workflow
+- Probability output showing model confidence
+- Inspectable training dataset table
+- User-submitted labeled messages
+- Dynamic retraining when data is added`,
+      "stack.json": `{
+  "backend": ["Python", "Flask"],
+  "frontend": ["HTML", "CSS"],
+  "data": ["CSV"]
+}`,
+      "highlights.txt": `- Applied prior probabilities, likelihoods, and word features to real text
+- Connected machine-learning logic to a usable web interface
+- Made model confidence and training data visible to users
+- Learned how dataset size and quality affect classification accuracy`,
+      "structure.txt": `naive-bayes-spam-classifier/
+├── templates/
+├── static/
+├── data/
+├── app.py
+└── README.md`,
+      "links.txt": `github: https://github.com/nguyena221/na-ve-bayes-spam-classifier`,
+    },
+  },
+  {
+    name: "Markov Weather Simulator",
+    slug: "markov-weather-simulator",
+    period: "Spring 2026",
+    status: "Completed",
+    icon: "weather",
+    summary: "An interactive web simulation that models multi-day weather changes using editable Markov transition probabilities.",
+    stack: ["HTML", "Python", "JavaScript"],
+    highlights: [
+      "Implemented probabilistic transitions between weather states",
+      "Allowed users to edit the transition probabilities",
+      "Generated multi-day forecasts using real dates",
+    ],
+    links: { github: "https://github.com/nguyena221/markov-weather-simulator" },
+    files: {
+      "README.md": `# Markov Weather Simulator
+Completed · Spring 2026 · HTML, Python, JavaScript
+
+Markov Weather Simulator is a web-based app that models how weather changes over time using a Markov process. Users can simulate multiple days, adjust transition probabilities between states, and view the generated forecast with real dates.
+
+I built the simulator interface and transition logic to turn a mathematical probability concept into an interactive application. The project helped me understand how the current state and transition probabilities shape future outcomes, as well as how to communicate a conceptual model through a simple visual interface.`,
+      "features.txt": `- Multi-day weather simulation
+- Probabilistic Markov state transitions
+- Editable transition probabilities
+- Simulated forecasts with real dates
+- Interactive demonstration of probabilistic reasoning`,
+      "stack.json": `{
+  "logic": ["Python", "JavaScript"],
+  "frontend": ["HTML"]
+}`,
+      "highlights.txt": `- Represented transition probabilities in code
+- Demonstrated how probability changes affect simulation outcomes
+- Connected a mathematical model to an interactive interface
+- Practiced explaining state transitions visually`,
+      "structure.txt": `markov-weather-simulator/
+├── templates/
+├── static/
+├── app.py
+└── README.md`,
+      "links.txt": `github: https://github.com/nguyena221/markov-weather-simulator`,
+    },
+  },
+  {
+    name: "Cooking Data Pipeline",
+    slug: "cooking-data-pipeline",
+    period: "Spring 2026",
+    status: "Completed",
+    icon: "data",
+    summary: "An AWS data pipeline that automatically converts uploaded recipe JSON files to CSV and logs processing metadata.",
+    stack: ["Python", "AWS S3", "AWS Lambda", "Amazon RDS", "MySQL", "AWS CLI", "JSON", "CSV"],
+    highlights: [
+      "Worked on the Lambda-based transform stage",
+      "Moved JSON input and CSV output through separate S3 buckets",
+      "Supported conversion testing and RDS/MySQL processing logs",
+    ],
+    links: { github: "https://github.com/nguyena221/Group5_DS2002" },
+    files: {
+      "README.md": `# Cooking Data Pipeline
+Completed · Spring 2026 · Python, AWS S3, AWS Lambda, Amazon RDS, MySQL
+
+Cooking Data Pipeline is a cloud-based DS2002 final project that converts recipe data from JSON to CSV. Uploading a file to an S3 input bucket triggers a Lambda transform, stores the converted output in another bucket, and logs metadata, location, and processing status in an RDS/MySQL database.
+
+I worked in a group and focused on the transform stage, particularly the Lambda function's S3 input and output flow. I also supported and tested the JSON-to-CSV conversion. Connecting Lambda, S3 permissions, and the database taught me how cloud services coordinate in automated data workflows.`,
+      "features.txt": `- S3 input bucket for uploaded recipe JSON
+- Upload-triggered AWS Lambda processing
+- JSON-to-CSV recipe transformation
+- Separate S3 bucket for processed output
+- RDS/MySQL metadata, location, and status logging
+- Automated cloud data workflow`,
+      "stack.json": `{
+  "language": ["Python"],
+  "cloud": ["AWS S3", "AWS Lambda", "Amazon RDS"],
+  "database": ["MySQL"],
+  "tools": ["AWS CLI"],
+  "formats": ["JSON", "CSV"]
+}`,
+      "highlights.txt": `- Collaborated on a group cloud-data project
+- Focused on the Lambda transform stage and S3 file flow
+- Tested JSON-to-CSV conversion within the full pipeline
+- Learned about cloud permissions, triggers, connections, and documentation`,
+      "structure.txt": `Group5_DS2002/
+├── lambda/
+├── data/
+├── database/
+├── docs/
+└── README.md`,
+      "links.txt": `github: https://github.com/nguyena221/Group5_DS2002
+demo: Coming soon`,
+    },
+  },
+  {
+    name: "AI Grocery Assistant",
+    slug: "ai-grocery-assistant",
+    period: "Spring 2026",
+    status: "Completed",
+    icon: "grocery",
+    summary: "A natural-language grocery search app that filters and ranks products by needs such as budget, sales, SNAP/EBT eligibility, and brand.",
+    stack: [
+      "Python",
+      "FastAPI",
+      "React",
+      "TypeScript",
+      "Vite",
+      "CSS",
+      "CSV",
+      "pandas",
+      "NumPy",
+      "scikit-learn",
+      "Ollama",
+    ],
+    highlights: [
+      "Created and organized the grocery product data",
+      "Set up database and backend API foundations",
+      "Contributed to filtering, ranking, embeddings, and Ollama integration",
+    ],
+    links: { github: "https://github.com/byuk729/aiProject" },
+    files: {
+      "README.md": `# AI Grocery Assistant
+Completed · Spring 2026 · Python, FastAPI, React, TypeScript, Ollama
+
+AI Grocery Assistant is a web app that lets users search for grocery products in natural language. Requests can describe affordable products, sale items, SNAP/EBT eligibility, or brands, and the app returns recommendations using product data, filters, and ranking logic.
+
+In this group project, I focused on product data, database and API setup, and search logic. I organized the CSV dataset, helped connect it to the backend, contributed to filters and ranking, and supported Ollama and local embedding-model setup. The project showed me that effective AI features rely on well-structured data and dependable backend systems.`,
+      "features.txt": `- Natural-language grocery search
+- Organized CSV-backed product data
+- FastAPI connection between product data and frontend
+- Price, sale, SNAP/EBT, and brand filters
+- Search-result ranking
+- Embedding-based product matching
+- Ollama local-model integration
+- React and TypeScript frontend`,
+      "stack.json": `{
+  "backend": ["Python", "FastAPI"],
+  "frontend": ["React", "TypeScript", "Vite", "CSS"],
+  "data": ["CSV", "pandas", "NumPy", "scikit-learn"],
+  "ai": ["Ollama", "Embeddings"]
+}`,
+      "highlights.txt": `- Worked in a group on data, backend, and search responsibilities
+- Organized product data and database structure
+- Improved results through filters and ranking logic
+- Practiced interpreting vague natural-language requests
+- Connected AI tooling, APIs, data, and frontend behavior`,
+      "structure.txt": `aiProject/
+├── backend/
+├── frontend/
+├── data/
+├── models/
+└── README.md`,
+      "links.txt": `github: https://github.com/byuk729/aiProject
+demo: Coming soon`,
+    },
+  },
 ]
+
+const projectDetails: Record<string, ProjectDetails> = {
+  "pro-nails-website": {
+    summary: "The Pro Nails Website is an online platform for a local nail salon, Pro Nails. It showcases the company’s mission, service menu, contact information, and a gallery of the salon’s work. The website helps improve customer interaction by giving clients an easy way to view services, pricing, examples of previous designs, and business information online. It was created using HTML, CSS, and JavaScript.",
+    context: "The goal of this project was to create a fully functional, accessible, and user-friendly website for the business. Before this project, the company did not have a strong online presence, so the website served as a bridge between the salon and its customers. This project also gave me the opportunity to work with a real client, understand their needs, and turn their expectations into a finished website.",
+    role: "I was the sole developer on this project. I built the website structure, designed the layouts and pages, and programmed the site using HTML, CSS, and JavaScript. I also communicated directly with the business to make sure the website matched their expectations, included accurate information, and represented the salon professionally. In addition, I handled the deployment process and continue to update the website when changes are needed.",
+    learned: "This was my first project working directly with a real client, so I learned a lot about communication, collaboration, and building a product based on someone else’s needs. One challenge was making sure the website looked professional while still matching the business’s style and expectations. I also learned how to deploy a website, make updates after launch, and think about how real users would interact with the site. This project helped me understand that web development is not only about writing code, but also about listening to the client, organizing information clearly, and creating something useful for both the business and its customers.",
+  },
+  gamedate: {
+    summary: "GameDate is a personality-first dating app prototype that uses quizzes and interactive profile features to help users match beyond basic photos. Quizzes unlock personality traits that can be displayed on user profiles. Users also have the option to showcase other personality traits and interests, such as places they want to visit, places they have visited, foods they want to try, or foods they have tried.",
+    context: "The goal of this project was to create a dating experience that felt more intentional by focusing on personality traits, preferences, and shared interests. Dating can feel serious and intimidating, so this app tries to make the experience more interactive and approachable. This was also a class project where we were instructed to work in a group and develop an app of any kind within the span of one month.",
+    role: "I worked with another developer on this project. My main role was to build the core UI screens, including the Home/Dashboard, Discover, Message, and Profile pages. I also set up the Firebase backend and worked on the backend functionality and storage for messages. In addition, I helped build the profile page functionality, including what users could customize on their profiles. Both of us tested each other’s work, communicated throughout the project, and checked in with each other to stay on track.",
+    learned: "This was one of my first experiences building a mobile app, so it was a valuable opportunity to learn React Native, Expo Go, and Firebase. I also gained a better understanding of mobile app development, backend integration, real-time messaging, and user profile customization. One of the biggest challenges was the one-month time constraint, which made communication and time management especially important. This project taught me how to work with another developer, divide tasks, test features, and build a functioning app under a tight deadline.",
+  },
+  "task-manager": {
+    summary: "Task Manager is a simple mobile task management app built with React Native and Expo. The app allows users to create tasks, add short descriptions, mark tasks as complete or incomplete, edit existing tasks, and delete tasks when they are finished. It focuses on creating a clean and easy-to-use task list experience with smooth user interactions.",
+    context: "I’ve always liked using to-do lists to stay organized, so I wanted to build a simple task manager that felt quick and easy to use. The goal of this project was to practice mobile app development while creating a basic productivity app where users could add, edit, complete, and delete tasks without the interface feeling too complicated.",
+    role: "I built the app’s main interface and task functionality. I created the task list structure, add task modal, edit/delete actions, complete/incomplete task behavior, and the info popup that explains how the app works. I also worked on organizing the app into separate components so the project was easier to manage and update.",
+    learned: "This project helped me practice building a mobile app with React Native and Expo. I learned more about managing state, passing information between components, and making interactive UI elements like buttons, modals, icons, and task cards. One challenge was keeping the app organized as more features were added, so separating the app into smaller components helped make the code cleaner and easier to work with.",
+  },
+  "naive-bayes-spam-classifier": {
+    summary: "Naïve Bayes Spam Classifier is a web app that classifies messages as spam or ham using a Naïve Bayes machine learning model. Users can type in a message, receive a prediction with probability output, view the training dataset, and add their own labeled messages to improve the model.",
+    context: "The goal of this project was to better understand how machine learning can be used for text classification. Spam detection is a common real-world example of classification, so this project helped connect probability concepts to an actual application. I wanted to build something that showed not only the final prediction, but also how the model could be trained and improved with additional labeled data.",
+    role: "I built the web app and implemented the main spam classification workflow. I set up the Flask backend, connected the app to a dataset, created the message input and prediction system, and added functionality for users to view and add training data. I also worked on organizing the project structure with separate files for the app logic, HTML template, CSS styling, and dataset.",
+    learned: "This project helped me understand how probability-based machine learning models can be applied to real text data. I learned how Naïve Bayes uses word features, prior probabilities, and likelihoods to make predictions. A challenge was working with a smaller dataset, which limited the model’s accuracy and made it clear how important training data quality is. I also learned more about connecting backend logic to a web interface and making machine learning results easier for users to understand.",
+  },
+  "markov-weather-simulator": {
+    summary: "Markov Weather Simulator is a web-based simulation app that models how weather can change over time using a Markov model. Users can simulate weather across multiple days, adjust transition probabilities between weather states, and view a generated forecast with real dates.",
+    context: "This project was created for the same class as my Naïve Bayes Spam Classifier project, where I was learning how probability-based models can be used in simple AI systems. The goal was to better understand Markov processes by building an interactive simulation instead of only studying the concept mathematically. Weather was a useful example because it naturally changes from one state to another, such as sunny, cloudy, or rainy, based on probability.",
+    role: "I built the main simulator interface and implemented the weather transition logic. I created the structure for users to run a multi-day simulation, adjust transition probabilities, and view the generated forecast. I also worked on connecting the probability model to a simple web interface so the results were easier to understand visually.",
+    learned: "This project helped me better understand how Markov models use the current state to predict possible future states. I learned how transition probabilities can be represented in code and how changing those probabilities affects the simulation results. One challenge was making the probability logic understandable through a simple interface, especially because the model is more conceptual than visual. This helped me practice turning a mathematical idea into an interactive application.",
+  },
+  "cooking-data-pipeline": {
+    summary: "Cooking Data Pipeline is a cloud-based data processing project that converts recipe data from JSON files into CSV files. The project uses AWS S3, AWS Lambda, and Amazon RDS/MySQL to create an automated pipeline where uploaded recipe files are processed, stored, and logged.",
+    context: "This project was created as a final project for DS2002. The goal was to practice building a real data pipeline that could move data through multiple stages instead of only working with files locally. Since recipe data can come in structured formats like JSON, this project focused on transforming recipe data into CSV format and tracking each file’s processing status in a database.",
+    role: "I worked as part of a group to help build and test the data pipeline. My main focus was on the transform stage, specifically working with the AWS Lambda function that reads input files from the S3 input bucket and writes the processed output files back to the S3 output bucket. I also helped check and support my partner’s work on the file conversion part of the project to make sure the JSON-to-CSV transformation worked correctly within the pipeline.",
+    learned: "This project helped me understand how cloud services can work together to automate data processing. I learned more about AWS S3 buckets, Lambda triggers, file input/output handling, JSON-to-CSV conversion, and database logging with MySQL. One challenge was making sure each part of the pipeline connected correctly, especially the Lambda function, S3 input/output buckets, permissions, and database connection. This project gave me more experience with backend data workflows and showed me how important testing and clear documentation are when working with cloud-based systems.",
+  },
+  "ai-grocery-assistant": {
+    summary: "AI Grocery Assistant is a web app that helps users search for grocery products using natural language. Users can type requests for affordable items, sale items, SNAP/EBT eligible products, or specific brands, and the app returns grocery recommendations based on product data, filtering, and ranking logic.",
+    context: "This project was created to explore how AI can make grocery search more useful and flexible than a normal keyword search. Instead of forcing users to search with exact product names, the app lets users describe what they want in a more natural way. The goal was to connect AI concepts like embeddings, semantic search, filtering, and ranking to a practical everyday problem: finding grocery products that match a user’s needs, budget, and preferences.",
+    role: "I worked as part of a group and focused mainly on the database, API setup, and search/recommendation logic. I created and organized the CSV data used for the grocery products, set up the database structure, and helped connect the data to the backend API. I also contributed to the filtering process and worked on the search function so results could be ranked more accurately based on the user’s request. In addition, I helped with the Ollama setup and local model work used for the AI/embedding portion of the project.",
+    learned: "This project helped me understand how AI features depend heavily on strong data organization and backend structure. I learned more about building APIs, preparing CSV data for a database, connecting data to a frontend, and improving search results through filtering and ranking logic. One challenge was making the search feel accurate when users typed vague or casual requests, since the system needed to interpret the request and return useful products. This project showed me how database design, API development, filtering logic, and AI tools like Ollama can work together in a full-stack application.",
+  },
+  "daily-grid": {
+    summary: "Daily Grid is an unfinished visual weekly planner app designed to help users organize tasks, events, and routines into a balanced weekly schedule. The app focuses on creating a more personalized planning experience with daily and weekly views, task tracking, and future AI-assisted planning features.",
+    context: "I created this project because I’ve always liked planners, to-do lists, and visual organization tools, but I wanted to build something that felt more customizable and personal than a basic calendar app. The goal is to make a planner where users can organize their week while also customizing the space to match their own style, almost like a digital scrapbook. In the future, I want users to be able to personalize their planner with stickers, sticky notes, colors, and aesthetic layouts that fit how they like to plan.",
+    role: "I am building this project independently and working on the frontend structure, planner layout, task/event management features, and overall design direction. I set up the React/TypeScript project structure and began building the core planning experience, including weekly and daily views, task organization, and completion tracking. Since the project is still in progress, I am continuing to refine the UI, improve the planner flow, and plan out the customization and AI-assisted scheduling features.",
+    learned: "This project has helped me practice building a larger frontend project with React and TypeScript while thinking more carefully about user experience and layout design. I learned that planning apps are more complicated than they look because the interface has to feel flexible, clean, and useful without becoming overwhelming. One challenge is balancing productivity features with customization features, since I want the app to be functional but also feel personal and creative. Since this project is unfinished, my next steps are to finish the core task/event flow, improve the weekly planner UI, and then build out the personalization features.",
+  },
+}
 
 const projectFiles: ProjectFile[] = [
   "README.md",
@@ -225,6 +539,11 @@ const iconMap = {
   calendar: CalendarDays,
   mobile: MonitorSmartphone,
   store: Store,
+  tasks: ListChecks,
+  classifier: BrainCircuit,
+  weather: CloudSun,
+  data: Database,
+  grocery: ShoppingBasket,
 }
 
 const carouselRepeatCount = 7
@@ -341,6 +660,11 @@ export function Projects() {
   }, [view])
 
   const selectedProject = getProject(selectedSlug) ?? projects[0]
+  const selectedDetails = projectDetails[selectedProject.slug]
+  const selectedFeatures = selectedProject.files["features.txt"]
+    .split("\n")
+    .map((feature) => feature.replace(/^-\s*/, ""))
+    .filter(Boolean)
 
   const getClosestCarouselIndex = () => {
     const container = carouselRef.current
@@ -442,18 +766,17 @@ export function Projects() {
     event.preventDefault()
     event.stopPropagation()
 
-    const scrollAmount = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
-    container.scrollBy({
-      left: -scrollAmount * 0.72,
-      behavior: "smooth",
-    })
+    const deltaMultiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? container.clientWidth : 1
+    const scrollAmount = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * deltaMultiplier
+
+    container.scrollLeft += scrollAmount
     window.requestAnimationFrame(updateCarouselCenter)
 
     if (carouselSettleTimer.current) {
       clearTimeout(carouselSettleTimer.current)
     }
 
-    carouselSettleTimer.current = setTimeout(settleCarouselToNearestItem, 180)
+    carouselSettleTimer.current = setTimeout(settleCarouselToNearestItem, 240)
   }
 
   useEffect(() => {
@@ -778,7 +1101,7 @@ export function Projects() {
                   <h3 className="text-2xl font-black tracking-normal text-[#542916] md:text-3xl">
                     {selectedProject.name}
                   </h3>
-                  <p className="mt-3 max-w-2xl text-sm leading-6 md:text-base">{selectedProject.summary}</p>
+                  <p className="mt-3 max-w-3xl text-sm leading-6 md:text-base">{selectedDetails.summary}</p>
                 </div>
 
                 <div className="flex shrink-0 gap-2">
@@ -807,22 +1130,50 @@ export function Projects() {
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
+              <section className="mt-7 border-t border-[#a13a1e]/14 pt-6">
+                <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">Context &amp; Purpose</h4>
+                <p className="mt-2 text-sm leading-6 text-[#542916]/90 md:text-base md:leading-7">{selectedDetails.context}</p>
+              </section>
+
+              <section className="mt-6">
+                <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">My Role</h4>
+                <p className="mt-2 text-sm leading-6 text-[#542916]/90 md:text-base md:leading-7">{selectedDetails.role}</p>
+              </section>
+
+              <section className="mt-6">
+                <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">Tech Stack</h4>
+                <div className="mt-3 flex flex-wrap gap-2">
                 {selectedProject.stack.map((item) => (
                   <span key={item} className="rounded-full bg-[#f1c166]/28 px-3 py-1 text-xs font-semibold text-[#542916]">
                     {item}
                   </span>
                 ))}
-              </div>
+                </div>
+              </section>
 
-              <div className="mt-5 grid gap-3 md:grid-cols-3">
-                {selectedProject.highlights.map((highlight) => (
-                  <div key={highlight} className="flex gap-2 text-sm leading-5 text-[#542916]">
+              <section className="mt-6">
+                <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">Key Features</h4>
+                <div className="mt-3 grid gap-x-8 gap-y-3 md:grid-cols-2">
+                {selectedFeatures.map((feature) => (
+                  <div key={feature} className="flex gap-2 text-sm leading-6 text-[#542916]">
                     <Sparkles className="mt-0.5 size-4 shrink-0 text-[#a13a1e]" />
-                    <span>{highlight}</span>
+                    <span>{feature}</span>
                   </div>
                 ))}
-              </div>
+                </div>
+              </section>
+
+              <section className="mt-6">
+                <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">What I Learned &amp; Challenges</h4>
+                <p className="mt-2 text-sm leading-6 text-[#542916]/90 md:text-base md:leading-7">{selectedDetails.learned}</p>
+              </section>
+
+              <section className="mt-6 border-t border-[#a13a1e]/14 pt-5">
+                <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">Links</h4>
+                <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-xs leading-6 text-[#542916]/80 md:text-sm">
+                  {selectedProject.files["links.txt"]}
+                </pre>
+              </section>
             </motion.div>
           </div>
         )}
