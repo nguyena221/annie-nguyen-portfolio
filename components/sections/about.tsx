@@ -172,8 +172,9 @@ export function About({ isVisible }: AboutProps) {
         transition={{ type: "spring", stiffness: 520, damping: 32 }}
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.35),transparent_28%,transparent_72%,rgba(255,255,255,0.28))]" />
-      {hintHost && createPortal(<motion.div
+      {hintHost && isVisible && createPortal(<motion.div
         className="pointer-events-none fixed bottom-[5rem] left-[5.5rem] z-[100] hidden w-20 text-center md:block"
+        initial={{ opacity: 0 }}
         animate={{ opacity: showClickHint ? 1 : 0 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
         aria-hidden={!showClickHint}
@@ -274,9 +275,10 @@ export function About({ isVisible }: AboutProps) {
           onMouseLeave={resetProfileTilt}
           style={{ perspective: 900 }}
         >
-          {hintHost && createPortal(<motion.div
+          {hintHost && isVisible && createPortal(<motion.div
             className="pointer-events-none fixed z-[100] hidden flex-col items-center md:flex"
             style={{ left: hoverHintPosition.left, top: hoverHintPosition.top, width: hoverHintPosition.width }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: showHoverHint ? 1 : 0 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
             aria-hidden={!showHoverHint}

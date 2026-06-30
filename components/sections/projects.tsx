@@ -653,6 +653,9 @@ const carouselUpperBoundary = projects.length * (carouselRepeatCount - 2)
 const carouselProjects = Array.from({ length: carouselRepeatCount }).flatMap(() => projects)
 
 const getHelpOutput = () => [
+  "View:",
+  "  Use the control in the top-right corner to switch project views.",
+  "",
   "Commands:",
   "  ls                 list folders or files",
   "  cd <folder>        enter a project folder",
@@ -739,7 +742,6 @@ export function Projects() {
       cwd: "projects",
       output: [
         "Welcome to ~/projects.",
-        "Prefer a quick visual overview? Click Browse in the top right.",
         "Type `help` for commands, or start with `ls`.",
       ],
     },
@@ -1199,9 +1201,9 @@ export function Projects() {
                 ? { opacity: 1, filter: "blur(0px)", y: 0 }
                 : { opacity: 0, filter: "blur(14px)", y: 32 }}
               transition={{
-                opacity: { duration: 0.55, delay: isInView ? 0.04 : 0, ease: "easeOut" },
-                filter: { duration: 0.65, delay: isInView ? 0.04 : 0, ease: "easeOut" },
-                y: { type: "spring", stiffness: 120, damping: 14, mass: 0.8, delay: isInView ? 0.04 : 0 },
+                opacity: { duration: 0.42, delay: isInView ? 0.03 : 0, ease: "easeOut" },
+                filter: { duration: 0.5, delay: isInView ? 0.03 : 0, ease: "easeOut" },
+                y: { type: "spring", stiffness: 140, damping: 15, mass: 0.75, delay: isInView ? 0.03 : 0 },
               }}
             >
               <h2
@@ -1223,48 +1225,16 @@ export function Projects() {
                 ? { opacity: 1, filter: "blur(0px)", y: 0, scale: 1 }
                 : { opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
               transition={{
-                opacity: { duration: 0.65, delay: isInView ? 0.12 : 0, ease: "easeOut" },
-                filter: { duration: 0.8, delay: isInView ? 0.12 : 0, ease: "easeOut" },
-                y: { type: "spring", stiffness: 105, damping: 13, mass: 0.9, delay: isInView ? 0.12 : 0 },
-                scale: { duration: 0.65, delay: isInView ? 0.12 : 0, ease: "easeOut" },
+                opacity: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
+                filter: { duration: 0.62, delay: isInView ? 0.08 : 0, ease: "easeOut" },
+                y: { type: "spring", stiffness: 125, damping: 14, mass: 0.85, delay: isInView ? 0.08 : 0 },
+                scale: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
               }}
             >
-              {showBrowseHint && (
-              <div
-                className={`${justMeAgainDownHere.className} pointer-events-none absolute top-7 z-20 flex max-w-[calc(100%-1rem)] items-start justify-end text-right text-lg tracking-wide text-[#a13a1e]/80 sm:text-[1.35rem] ${
-                  showTerminalMedia ? "right-[6%] lg:right-[calc(100%-var(--terminal-share))]" : "right-[6%] sm:right-[11%]"
-                }`}
-              >
-                <span className="-translate-y-1 leading-none sm:whitespace-nowrap">Prefer a simpler layout? Browse here</span>
-                <svg
-                  className="ml-3 h-5 w-20 shrink-0 overflow-visible"
-                  viewBox="0 0 80 48"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M2 5C31 3 58 8 69 37"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <path
-                    d="M59 31L71 41L76 24"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-              </div>
-              )}
               <motion.div
                 layout
                 transition={{ duration: 0.22, ease: "easeInOut" }}
-                className={`flex h-[clamp(640px,78svh,760px)] flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px] ${
+                className={`relative flex h-[clamp(640px,78svh,760px)] flex-col overflow-visible rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px] ${
                   showTerminalMedia
                     ? "w-[min(88vw,988px)] lg:w-[var(--terminal-share)] lg:max-w-none lg:shrink-0"
                     : "w-[min(78vw,988px)]"
@@ -1272,7 +1242,16 @@ export function Projects() {
                 aria-label="Projects terminal"
                 onClick={() => inputRef.current?.focus()}
               >
-            <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#a13a1e]/18 bg-[#fefaf0]/22 py-0 pl-4 pr-1.5">
+            {showBrowseHint && (
+              <div className={`${justMeAgainDownHere.className} pointer-events-none absolute bottom-full right-1.5 z-20 mb-4 flex max-w-[calc(100vw-3rem)] items-start justify-end text-right text-lg tracking-wide text-[#a13a1e]/80 sm:text-[1.35rem]`}>
+                <span className="-translate-y-2 leading-none sm:whitespace-nowrap">Prefer a simpler layout? Browse here</span>
+                <svg className="ml-3 h-5 w-20 shrink-0 overflow-visible" viewBox="0 0 80 48" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M2 5C31 3 58 8 69 37" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+                  <path d="M59 31L71 41L76 24" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                </svg>
+              </div>
+            )}
+            <div className="flex h-10 shrink-0 items-center gap-2 rounded-t-[9px] border-b border-[#a13a1e]/18 bg-[#fefaf0]/22 py-0 pl-4 pr-1.5">
               <span className="h-3 w-3 rounded-full bg-[#d46a5f]" />
               <span className="h-3 w-3 rounded-full bg-[#e8bb67]" />
               <span className="h-3 w-3 rounded-full bg-[#9ebf86]" />
@@ -1422,7 +1401,19 @@ export function Projects() {
             </motion.div>
           </>
         ) : (
-          <div className="w-full">
+          <motion.div
+            className="w-full"
+            initial={{ opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+            animate={isInView
+              ? { opacity: 1, filter: "blur(0px)", y: 0, scale: 1 }
+              : { opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+            transition={{
+              opacity: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
+              filter: { duration: 0.62, delay: isInView ? 0.08 : 0, ease: "easeOut" },
+              y: { type: "spring", stiffness: 125, damping: 14, mass: 0.85, delay: isInView ? 0.08 : 0 },
+              scale: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
+            }}
+          >
             <div className="relative mx-auto mb-5 w-fit pb-14">
               <div className="flex items-end justify-center gap-3">
                 <h2
@@ -1451,9 +1442,9 @@ export function Projects() {
               <div
                 className={`${justMeAgainDownHere.className} pointer-events-none absolute right-0 top-[4rem] z-20 flex max-w-[calc(100vw-3rem)] items-start justify-end text-right text-lg tracking-wide text-[#a13a1e]/80 sm:w-96 sm:text-[1.35rem]`}
               >
-                <span className="max-w-52 leading-none sm:max-w-none sm:whitespace-nowrap">Prefer command-based navigation? Terminal here</span>
+                <span className="max-w-52 translate-y-2 leading-none sm:max-w-none sm:whitespace-nowrap">Prefer command-based navigation? Terminal here</span>
                 <svg
-                  className="ml-3 h-5 w-20 translate-y-3 shrink-0 overflow-visible"
+                  className="ml-3 h-5 w-20 translate-y-1 shrink-0 overflow-visible"
                   viewBox="0 0 80 48"
                   fill="none"
                   preserveAspectRatio="none"
@@ -1675,7 +1666,7 @@ export function Projects() {
                 </div>
               </section>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </motion.div>
 
