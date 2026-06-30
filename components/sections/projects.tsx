@@ -4,6 +4,8 @@ import { motion, useInView } from "framer-motion"
 import {
   BrainCircuit,
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   CloudSun,
   Database,
   ExternalLink,
@@ -15,11 +17,13 @@ import {
   Sparkles,
   Store,
   Terminal,
+  X,
 } from "lucide-react"
-import { Instrument_Serif } from "next/font/google"
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react"
+import { Instrument_Serif, Just_Me_Again_Down_Here } from "next/font/google"
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react"
 
-type ProjectFile = "README.md" | "features.txt" | "stack.json" | "highlights.txt" | "structure.txt" | "links.txt"
+type ProjectSourceFile = "README.md" | "features.txt" | "stack.json" | "highlights.txt" | "structure.txt" | "links.txt"
+type TerminalProjectFile = "README.md" | "REFLECTION.md" | "STRUCTURE.md"
 
 type Project = {
   name: string
@@ -34,7 +38,7 @@ type Project = {
     live?: string
     github?: string
   }
-  files: Record<ProjectFile, string>
+  files: Record<ProjectSourceFile, string>
 }
 
 type TerminalEntry = {
@@ -50,7 +54,16 @@ type ProjectDetails = {
   learned: string
 }
 
+type ProjectMedia =
+  | { type: "video"; src: string; label: string }
+  | { type: "image"; src: string; alt: string }
+
 const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+})
+
+const justMeAgainDownHere = Just_Me_Again_Down_Here({
   subsets: ["latin"],
   weight: "400",
 })
@@ -164,8 +177,7 @@ The project was completed with another developer in one month for a class. I bui
 ├── index.js
 ├── package.json
 └── package-lock.json`,
-      "links.txt": `github: https://github.com/nguyena221/DatingApp
-demo: Coming soon`,
+      "links.txt": `github: https://github.com/nguyena221/DatingApp`,
     },
   },
   {
@@ -465,8 +477,7 @@ In this group project, I focused on product data, database and API setup, and se
 ├── data/
 ├── models/
 └── README.md`,
-      "links.txt": `github: https://github.com/byuk729/aiProject
-demo: Coming soon`,
+      "links.txt": `github: https://github.com/byuk729/aiProject`,
     },
   },
 ]
@@ -522,14 +533,102 @@ const projectDetails: Record<string, ProjectDetails> = {
   },
 }
 
-const projectFiles: ProjectFile[] = [
-  "README.md",
-  "features.txt",
-  "stack.json",
-  "highlights.txt",
-  "structure.txt",
-  "links.txt",
-]
+const projectMedia: Partial<Record<string, ProjectMedia[]>> = {
+  gamedate: [
+    { type: "video", src: "/images/projects/gamedate/demo.mov", label: "GameDate app demo" },
+  ],
+  "task-manager": [
+    { type: "video", src: "/images/projects/task-manager/demo.mov", label: "Task Manager app demo" },
+  ],
+  "naive-bayes-spam-classifier": [
+    { type: "image", src: "/images/projects/naive-bayes/view1.png", alt: "Naive Bayes spam classifier input and prediction view" },
+    { type: "image", src: "/images/projects/naive-bayes/view2.png", alt: "Naive Bayes spam classifier training data view" },
+  ],
+  "markov-weather-simulator": [
+    { type: "image", src: "/images/projects/markov-weather/view1.png", alt: "Markov weather simulator overview" },
+    { type: "image", src: "/images/projects/markov-weather/view2.png", alt: "Markov weather transition settings" },
+    { type: "image", src: "/images/projects/markov-weather/view3.png", alt: "Markov weather forecast results" },
+    { type: "image", src: "/images/projects/markov-weather/view4.png", alt: "Markov weather simulator detail view" },
+  ],
+  "ai-grocery-assistant": [
+    { type: "video", src: "/images/projects/ai-grocery-assistant/demo.MOV", label: "AI Grocery Assistant demo" },
+  ],
+}
+
+const projectFiles: TerminalProjectFile[] = ["README.md", "REFLECTION.md", "STRUCTURE.md"]
+
+const getProjectReadme = (project: Project) => {
+  const details = projectDetails[project.slug]
+  const features = project.files["features.txt"]
+  const highlights = project.files["highlights.txt"]
+  const links = project.files["links.txt"]
+    .split("\n")
+    .map((line) => {
+      const match = line.match(/^([^:]+):\s*(https?:\/\/\S+)$/)
+      return match ? `- [${match[1]}](${match[2]})` : `- ${line}`
+    })
+    .join("\n")
+
+  return `# ${project.name}
+
+> ${project.status} · ${project.period}
+
+## Overview
+
+${details.summary}
+
+## Context & Purpose
+
+${details.context}
+
+## My Role
+
+${details.role}
+
+## Tech Stack
+
+${project.stack.map((item) => `- ${item}`).join("\n")}
+
+## Key Features
+
+${features}
+
+## Highlights
+
+${highlights}
+
+## Links
+
+${links}`
+}
+
+const getProjectReflection = (project: Project) => {
+  const details = projectDetails[project.slug]
+
+  return `# ${project.name} — Reflection
+
+## What I Learned & Challenges
+
+${details.learned}`
+}
+
+const getProjectStructure = (project: Project) => `# ${project.name} — Project Structure
+
+\`\`\`text
+${project.files["structure.txt"]}
+\`\`\``
+
+const getTerminalFileContents = (project: Project, fileName: TerminalProjectFile) => {
+  if (fileName === "REFLECTION.md") {
+    return getProjectReflection(project)
+  }
+
+  if (fileName === "STRUCTURE.md") {
+    return getProjectStructure(project)
+  }
+
+  return getProjectReadme(project)
+}
 
 const getPromptPath = (cwd: string) => (cwd === "projects" ? "~/projects" : `~/projects/${cwd}`)
 
@@ -617,16 +716,24 @@ export function Projects() {
   const outputRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const carouselShellRef = useRef<HTMLDivElement | null>(null)
+  const terminalSplitRef = useRef<HTMLDivElement | null>(null)
   const carouselRef = useRef<HTMLDivElement | null>(null)
   const carouselItemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const carouselSettleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const commandDraftRef = useRef("")
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [view, setView] = useState<"terminal" | "browse">("terminal")
+  const [showBrowseHint, setShowBrowseHint] = useState(true)
+  const [showTerminalHint, setShowTerminalHint] = useState(true)
   const [cwd, setCwd] = useState("projects")
   const [command, setCommand] = useState("")
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [commandHistoryIndex, setCommandHistoryIndex] = useState<number | null>(null)
   const [selectedSlug, setSelectedSlug] = useState(projects[0].slug)
   const [activeCarouselSlot, setActiveCarouselSlot] = useState(carouselMiddleStart)
   const [carouselCenter, setCarouselCenter] = useState(0)
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [terminalSplit, setTerminalSplit] = useState(68)
   const [history, setHistory] = useState<TerminalEntry[]>([
     {
       cwd: "projects",
@@ -637,6 +744,16 @@ export function Projects() {
       ],
     },
   ])
+
+  const switchToBrowse = () => {
+    setShowBrowseHint(false)
+    setView("browse")
+  }
+
+  const switchToTerminal = () => {
+    setShowTerminalHint(false)
+    setView("terminal")
+  }
 
   useEffect(() => {
     if (!outputRef.current) {
@@ -665,6 +782,82 @@ export function Projects() {
     .split("\n")
     .map((feature) => feature.replace(/^-\s*/, ""))
     .filter(Boolean)
+  const selectedMedia = projectMedia[selectedProject.slug] ?? []
+  const selectedImages = selectedMedia.filter(
+    (media): media is Extract<ProjectMedia, { type: "image" }> => media.type === "image",
+  )
+  const terminalProject = cwd === "projects" ? null : getProject(cwd) ?? null
+  const terminalMedia = terminalProject ? projectMedia[terminalProject.slug] ?? [] : []
+  const showTerminalMedia = terminalMedia.length > 0
+  const terminalHasPhotos = terminalMedia.some((media) => media.type === "image")
+
+  useEffect(() => {
+    if (showTerminalMedia) {
+      setTerminalSplit(terminalHasPhotos ? 47 : 68)
+    }
+  }, [terminalProject?.slug, showTerminalMedia, terminalHasPhotos])
+
+  const handleSplitPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const container = terminalSplitRef.current
+
+    if (!container || window.innerWidth < 1024) {
+      return
+    }
+
+    event.preventDefault()
+
+    const updateSplit = (clientX: number) => {
+      const bounds = container.getBoundingClientRect()
+      const nextSplit = ((clientX - bounds.left) / bounds.width) * 100
+      setTerminalSplit(Math.min(72, Math.max(30, nextSplit)))
+    }
+
+    const handlePointerMove = (pointerEvent: PointerEvent) => updateSplit(pointerEvent.clientX)
+    const handlePointerUp = () => {
+      window.removeEventListener("pointermove", handlePointerMove)
+      window.removeEventListener("pointerup", handlePointerUp)
+      document.body.style.cursor = ""
+      document.body.style.userSelect = ""
+    }
+
+    document.body.style.cursor = "col-resize"
+    document.body.style.userSelect = "none"
+    window.addEventListener("pointermove", handlePointerMove)
+    window.addEventListener("pointerup", handlePointerUp)
+  }
+
+  useEffect(() => {
+    setLightboxIndex(null)
+  }, [selectedProject.slug])
+
+  useEffect(() => {
+    if (lightboxIndex === null) {
+      return
+    }
+
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLightboxIndex(null)
+      } else if (event.key === "ArrowLeft") {
+        setLightboxIndex((current) =>
+          current === null ? null : (current - 1 + selectedImages.length) % selectedImages.length,
+        )
+      } else if (event.key === "ArrowRight") {
+        setLightboxIndex((current) =>
+          current === null ? null : (current + 1) % selectedImages.length,
+        )
+      }
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [lightboxIndex, selectedImages.length])
 
   const getClosestCarouselIndex = () => {
     const container = carouselRef.current
@@ -844,11 +1037,12 @@ export function Projects() {
         return { nextCwd: cwd, output: [`cd: no such folder: ${target}`] }
       }
 
+      setSelectedSlug(project.slug)
       return { nextCwd: project.slug, output: [] }
     }
 
     if (baseCommand === "cat") {
-      const fileName = args[0] as ProjectFile | undefined
+      const fileName = args[0] as TerminalProjectFile | undefined
 
       if (!currentProject) {
         return { nextCwd: cwd, output: ["cat: choose a project folder first with `cd <folder>`"] }
@@ -858,7 +1052,7 @@ export function Projects() {
         return { nextCwd: cwd, output: [`cat: no such file: ${fileName ?? ""}`] }
       }
 
-      return { nextCwd: cwd, output: currentProject.files[fileName].split("\n") }
+      return { nextCwd: cwd, output: getTerminalFileContents(currentProject, fileName).split("\n") }
     }
 
     if (baseCommand === "tree") {
@@ -866,7 +1060,10 @@ export function Projects() {
         return { nextCwd: cwd, output: projects.map((project) => `${project.slug}/`) }
       }
 
-      return { nextCwd: cwd, output: currentProject.files["structure.txt"].split("\n") }
+      return {
+        nextCwd: cwd,
+        output: [`${currentProject.slug}/`, "├── README.md", "├── REFLECTION.md", "└── STRUCTURE.md"],
+      }
     }
 
     return { nextCwd: cwd, output: [`command not found: ${baseCommand}`, "Type `help` for available commands."] }
@@ -877,6 +1074,10 @@ export function Projects() {
 
     const submittedCommand = command
     const result = runCommand(submittedCommand)
+
+    if (submittedCommand.trim()) {
+      setCommandHistory((current) => [...current, submittedCommand])
+    }
 
     if (result.clear) {
       setHistory([])
@@ -893,9 +1094,50 @@ export function Projects() {
 
     setCwd(result.nextCwd)
     setCommand("")
+    setCommandHistoryIndex(null)
+    commandDraftRef.current = ""
   }
 
   const handleCommandKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "ArrowUp") {
+      event.preventDefault()
+
+      if (commandHistory.length === 0) {
+        return
+      }
+
+      const nextIndex = commandHistoryIndex === null
+        ? commandHistory.length - 1
+        : Math.max(0, commandHistoryIndex - 1)
+
+      if (commandHistoryIndex === null) {
+        commandDraftRef.current = command
+      }
+
+      setCommandHistoryIndex(nextIndex)
+      setCommand(commandHistory[nextIndex])
+      return
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault()
+
+      if (commandHistoryIndex === null) {
+        return
+      }
+
+      if (commandHistoryIndex < commandHistory.length - 1) {
+        const nextIndex = commandHistoryIndex + 1
+        setCommandHistoryIndex(nextIndex)
+        setCommand(commandHistory[nextIndex])
+      } else {
+        setCommandHistoryIndex(null)
+        setCommand(commandDraftRef.current)
+      }
+
+      return
+    }
+
     if (event.key !== "Tab") {
       return
     }
@@ -950,11 +1192,64 @@ export function Projects() {
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
         {view === "terminal" ? (
-          <div
-            className="flex h-[min(68vh,585px)] w-[min(78vw,988px)] flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px]"
-            aria-label="Projects terminal"
-            onClick={() => inputRef.current?.focus()}
-          >
+          <>
+            <h2
+              className={`${instrumentSerif.className} -mb-3 scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#542916] md:text-7xl`}
+              style={{
+                textShadow:
+                  "0.014em 0 0 currentColor, -0.014em 0 0 currentColor, 0 0.006em 0 currentColor, 0 8px 24px rgba(254,250,240,0.52)",
+              }}
+            >
+              PROJECTS
+            </h2>
+            <div
+              ref={terminalSplitRef}
+              className="relative flex w-full flex-col items-center justify-center gap-4 sm:pt-16 lg:flex-row lg:items-stretch lg:gap-0"
+              style={{ "--terminal-share": `${terminalSplit}%` } as CSSProperties}
+            >
+              {showBrowseHint && (
+              <div
+                className={`${justMeAgainDownHere.className} pointer-events-none absolute top-7 z-20 hidden w-96 -translate-x-2 items-start justify-end text-right text-[1.35rem] tracking-wide text-[#a13a1e]/80 sm:flex ${
+                  showTerminalMedia ? "left-[calc(var(--terminal-share)-24rem)]" : "right-[7%]"
+                }`}
+              >
+                <span className="-translate-y-1 whitespace-nowrap">Prefer a simpler layout? Browse here</span>
+                <svg
+                  className="ml-3 h-5 w-20 shrink-0 overflow-visible"
+                  viewBox="0 0 80 48"
+                  fill="none"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 5C31 3 58 8 69 37"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <path
+                    d="M59 31L71 41L76 24"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              </div>
+              )}
+              <motion.div
+                layout
+                transition={{ duration: 0.22, ease: "easeInOut" }}
+                className={`flex h-[min(68vh,585px)] flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px] ${
+                  showTerminalMedia
+                    ? "w-[min(88vw,988px)] lg:w-[var(--terminal-share)] lg:max-w-none lg:shrink-0"
+                    : "w-[min(78vw,988px)]"
+                }`}
+                aria-label="Projects terminal"
+                onClick={() => inputRef.current?.focus()}
+              >
             <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#a13a1e]/18 bg-[#fefaf0]/22 py-0 pl-4 pr-1.5">
               <span className="h-3 w-3 rounded-full bg-[#d46a5f]" />
               <span className="h-3 w-3 rounded-full bg-[#e8bb67]" />
@@ -966,7 +1261,7 @@ export function Projects() {
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation()
-                  setView("browse")
+                  switchToBrowse()
                 }}
                 className="group flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#a13a1e]/20 bg-[#fefaf0]/42 text-xs font-medium text-[#542916]/78 transition-all duration-300 hover:w-[5.7rem] hover:justify-start hover:bg-[#fefaf0]/70 hover:px-3 hover:text-[#542916] focus-visible:w-[5.7rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a13a1e]/60"
                 aria-label="Switch to browse view"
@@ -1011,7 +1306,11 @@ export function Projects() {
               <input
                 ref={inputRef}
                 value={command}
-                onChange={(event) => setCommand(event.target.value)}
+                onChange={(event) => {
+                  setCommand(event.target.value)
+                  setCommandHistoryIndex(null)
+                  commandDraftRef.current = event.target.value
+                }}
                 onKeyDown={handleCommandKeyDown}
                 className="ml-1 min-w-0 flex-1 bg-transparent text-[#542916] outline-none placeholder:text-[#542916]/38"
                 placeholder="type a command"
@@ -1020,11 +1319,91 @@ export function Projects() {
                 aria-label="Terminal command"
               />
             </form>
-          </div>
+              </motion.div>
+
+              {showTerminalMedia && terminalProject && (
+                <>
+                  <div
+                    className="group relative hidden w-7 shrink-0 cursor-col-resize touch-none items-center justify-center lg:flex"
+                    role="separator"
+                    aria-label="Resize terminal and demo panels"
+                    aria-orientation="vertical"
+                    aria-valuemin={30}
+                    aria-valuemax={72}
+                    aria-valuenow={Math.round(terminalSplit)}
+                    tabIndex={0}
+                    onPointerDown={handleSplitPointerDown}
+                    onKeyDown={(event) => {
+                      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                        event.preventDefault()
+                        setTerminalSplit((current) =>
+                          Math.min(72, Math.max(30, current + (event.key === "ArrowRight" ? 2 : -2))),
+                        )
+                      }
+                    }}
+                  >
+                    <span className="h-16 w-1 rounded-full bg-[#a13a1e]/35 transition group-hover:h-24 group-hover:bg-[#a13a1e]/65 group-focus:bg-[#a13a1e]/65" />
+                    <span className="absolute grid size-6 place-items-center rounded-full border border-[#a13a1e]/25 bg-[#fefaf0] text-[10px] font-bold text-[#a13a1e] shadow-sm">
+                      ↔
+                    </span>
+                  </div>
+                  <motion.aside
+                  key={terminalProject.slug}
+                  className="flex h-[min(68vh,585px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/62 p-4 text-[#542916] shadow-[0_18px_50px_rgba(84,41,22,0.16)] backdrop-blur-md lg:w-auto lg:min-w-0 lg:flex-1"
+                  initial={{ opacity: 0, x: 35, scale: 0.97 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 35, scale: 0.97 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  aria-label={`${terminalProject.name} demo`}
+                >
+                  <div className="mb-3 shrink-0">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#a13a1e]">Project Demo</p>
+                    <h3 className="mt-1 text-lg font-black">{terminalProject.name}</h3>
+                  </div>
+
+                  <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1 [scrollbar-color:rgba(161,58,30,0.35)_transparent]">
+                    {terminalMedia.map((media) =>
+                      media.type === "video" ? (
+                        <video
+                          key={media.src}
+                          className="max-h-full w-full rounded-lg bg-[#542916] object-contain shadow-md"
+                          controls
+                          muted
+                          playsInline
+                          preload="metadata"
+                          aria-label={media.label}
+                        >
+                          <source src={media.src} />
+                          Your browser does not support embedded videos.
+                        </video>
+                      ) : (
+                        <button
+                          key={media.src}
+                          type="button"
+                          onClick={() => setLightboxIndex(selectedImages.findIndex((image) => image.src === media.src))}
+                          className="group block w-full cursor-zoom-in overflow-hidden rounded-lg border border-[#a13a1e]/14 bg-[#542916]/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#a13a1e]"
+                          aria-label={`Enlarge ${media.alt}`}
+                        >
+                          <img
+                            src={media.src}
+                            alt={media.alt}
+                            className="h-auto w-full object-contain transition duration-300 group-hover:scale-[1.02]"
+                            loading="lazy"
+                          />
+                        </button>
+                      ),
+                    )}
+                  </div>
+                  </motion.aside>
+                </>
+              )}
+            </div>
+          </>
         ) : (
           <div className="w-full">
-            <div className="mb-5 flex items-end justify-center gap-3">
-              <h2
+            <div className="relative mx-auto mb-5 w-fit pb-14">
+              <div className="flex items-end justify-center gap-3">
+                <h2
                 className={`${instrumentSerif.className} scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#542916] md:text-7xl`}
                 style={{
                   textShadow:
@@ -1032,18 +1411,50 @@ export function Projects() {
                 }}
               >
                 PROJECT
-              </h2>
-              <button
-                type="button"
-                onClick={() => setView("terminal")}
-                className="group mb-1 flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-[#a13a1e]/20 bg-[#fefaf0]/52 text-xs font-semibold text-[#542916] shadow-[0_8px_20px_rgba(84,41,22,0.13)] backdrop-blur transition-all duration-300 hover:w-[6.4rem] hover:justify-start hover:bg-[#fefaf0]/80 hover:px-3 focus-visible:w-[6.4rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a13a1e]"
-                aria-label="Switch to terminal view"
+                </h2>
+                <button
+                  type="button"
+                  onClick={switchToTerminal}
+                  className="group mb-1 flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-[#a13a1e]/20 bg-[#fefaf0]/52 text-xs font-semibold text-[#542916] shadow-[0_8px_20px_rgba(84,41,22,0.13)] backdrop-blur transition-all duration-300 hover:w-[6.4rem] hover:justify-start hover:bg-[#fefaf0]/80 hover:px-3 focus-visible:w-[6.4rem] focus-visible:justify-start focus-visible:px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a13a1e]"
+                  aria-label="Switch to terminal view"
+                >
+                  <Terminal className="size-3.5 shrink-0" />
+                  <span className="ml-0 max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 group-hover:ml-1.5 group-hover:max-w-20 group-hover:opacity-100 group-focus-visible:ml-1.5 group-focus-visible:max-w-20 group-focus-visible:opacity-100">
+                    Terminal
+                  </span>
+                </button>
+              </div>
+
+              {showTerminalHint && (
+              <div
+                className={`${justMeAgainDownHere.className} pointer-events-none absolute right-0 top-[4rem] z-20 hidden w-96 items-start justify-end text-right text-[1.35rem] tracking-wide text-[#a13a1e]/80 sm:flex`}
               >
-                <Terminal className="size-3.5 shrink-0" />
-                <span className="ml-0 max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 group-hover:ml-1.5 group-hover:max-w-20 group-hover:opacity-100 group-focus-visible:ml-1.5 group-focus-visible:max-w-20 group-focus-visible:opacity-100">
-                  Terminal
-                </span>
-              </button>
+                <span className="whitespace-nowrap">Prefer command-based navigation? Terminal here</span>
+                <svg
+                  className="ml-3 h-5 w-20 translate-y-3 shrink-0 overflow-visible"
+                  viewBox="0 0 80 48"
+                  fill="none"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 42C31 44 58 39 69 11"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <path
+                    d="M59 17L71 7L76 24"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              </div>
+              )}
             </div>
 
             <div
@@ -1163,6 +1574,51 @@ export function Projects() {
                 </div>
               </section>
 
+              {selectedMedia.length > 0 && (
+                <section className="mt-6">
+                  <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">Project Demo</h4>
+                  <div className={`mt-3 grid gap-3 ${selectedMedia.length > 1 ? "md:grid-cols-2" : ""}`}>
+                    {selectedMedia.map((media) => (
+                      <div
+                        key={media.src}
+                        className="overflow-hidden rounded-xl border border-[#a13a1e]/14 bg-[#542916]/5 shadow-[0_8px_24px_rgba(84,41,22,0.10)]"
+                      >
+                        {media.type === "video" ? (
+                          <video
+                            className="max-h-[34rem] w-full bg-[#542916] object-contain"
+                            controls
+                            muted
+                            playsInline
+                            preload="metadata"
+                            aria-label={media.label}
+                          >
+                            <source src={media.src} />
+                            Your browser does not support embedded videos.
+                          </video>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setLightboxIndex(selectedImages.findIndex((image) => image.src === media.src))}
+                            className="group relative block h-full w-full cursor-zoom-in focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#a13a1e]"
+                            aria-label={`Enlarge ${media.alt}`}
+                          >
+                            <img
+                              src={media.src}
+                              alt={media.alt}
+                              className="h-full max-h-[30rem] w-full object-contain transition duration-300 group-hover:scale-[1.02]"
+                              loading="lazy"
+                            />
+                            <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-[#542916]/80 px-3 py-1 text-xs font-semibold text-[#fefaf0] opacity-0 backdrop-blur transition group-hover:opacity-100 group-focus-visible:opacity-100">
+                              View larger
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               <section className="mt-6">
                 <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">What I Learned &amp; Challenges</h4>
                 <p className="mt-2 text-sm leading-6 text-[#542916]/90 md:text-base md:leading-7">{selectedDetails.learned}</p>
@@ -1170,14 +1626,94 @@ export function Projects() {
 
               <section className="mt-6 border-t border-[#a13a1e]/14 pt-5">
                 <h4 className="text-sm font-black uppercase tracking-[0.14em] text-[#a13a1e]">Links</h4>
-                <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-xs leading-6 text-[#542916]/80 md:text-sm">
-                  {selectedProject.files["links.txt"]}
-                </pre>
+                <div className="mt-2 space-y-1 font-mono text-xs leading-6 text-[#542916]/80 md:text-sm">
+                  {selectedProject.files["links.txt"].split("\n").map((line) => {
+                    const match = line.match(/^([^:]+):\s*(https?:\/\/\S+)$/)
+
+                    if (!match) {
+                      return <p key={line}>{line}</p>
+                    }
+
+                    const [, label, url] = match
+
+                    return (
+                      <p key={line}>
+                        {label}:{" "}
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="break-all font-semibold text-[#a13a1e] underline decoration-[#a13a1e]/40 underline-offset-4 transition hover:text-[#542916] hover:decoration-[#542916]"
+                        >
+                          {url}
+                        </a>
+                      </p>
+                    )
+                  })}
+                </div>
               </section>
             </motion.div>
           </div>
         )}
       </motion.div>
+
+      {lightboxIndex !== null && selectedImages[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1d0d07]/92 p-4 backdrop-blur-sm md:p-10"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedProject.name} image gallery`}
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxIndex(null)}
+            className="absolute right-4 top-4 z-10 grid size-11 place-items-center rounded-full bg-[#fefaf0]/12 text-[#fefaf0] transition hover:bg-[#fefaf0]/24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fefaf0]"
+            aria-label="Close image gallery"
+          >
+            <X className="size-6" />
+          </button>
+
+          {selectedImages.length > 1 && (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation()
+                setLightboxIndex((lightboxIndex - 1 + selectedImages.length) % selectedImages.length)
+              }}
+              className="absolute left-3 z-10 grid size-11 place-items-center rounded-full bg-[#fefaf0]/12 text-[#fefaf0] transition hover:bg-[#fefaf0]/24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fefaf0] md:left-6 md:size-13"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="size-7" />
+            </button>
+          )}
+
+          <div className="flex max-h-full max-w-[92vw] flex-col items-center gap-3" onClick={(event) => event.stopPropagation()}>
+            <img
+              src={selectedImages[lightboxIndex].src}
+              alt={selectedImages[lightboxIndex].alt}
+              className="max-h-[82vh] max-w-full rounded-lg object-contain shadow-2xl"
+            />
+            <p className="text-sm font-semibold text-[#fefaf0]/85">
+              {lightboxIndex + 1} / {selectedImages.length}
+            </p>
+          </div>
+
+          {selectedImages.length > 1 && (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation()
+                setLightboxIndex((lightboxIndex + 1) % selectedImages.length)
+              }}
+              className="absolute right-3 z-10 grid size-11 place-items-center rounded-full bg-[#fefaf0]/12 text-[#fefaf0] transition hover:bg-[#fefaf0]/24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fefaf0] md:right-6 md:size-13"
+              aria-label="Next image"
+            >
+              <ChevronRight className="size-7" />
+            </button>
+          )}
+        </div>
+      )}
     </section>
   )
 }
