@@ -721,7 +721,7 @@ export function Projects() {
   const carouselItemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const carouselSettleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const commandDraftRef = useRef("")
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { amount: 0.12 })
   const [view, setView] = useState<"terminal" | "browse">("terminal")
   const [showBrowseHint, setShowBrowseHint] = useState(true)
   const [showTerminalHint, setShowTerminalHint] = useState(true)
@@ -1170,7 +1170,7 @@ export function Projects() {
       id="projects"
       ref={ref}
       className={`relative flex min-h-[100svh] items-center justify-center px-6 py-16 transition-colors duration-500 md:px-12 lg:px-24 ${
-        view === "browse" ? "overflow-x-hidden bg-[#f8ddd2]" : "overflow-hidden bg-[#f8ddd2] lg:h-[100svh]"
+        view === "browse" ? "overflow-x-hidden bg-[#f8ddd2]" : "overflow-x-hidden bg-[#f8ddd2]"
       }`}
     >
       {view === "terminal" ? (
@@ -1187,33 +1187,55 @@ export function Projects() {
 
       <motion.div
         className="relative flex w-full max-w-6xl flex-col items-center"
-        initial={{ opacity: 0, y: 34, scale: 0.985 }}
-        animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        initial={false}
+        animate={{ opacity: 1 }}
       >
         {view === "terminal" ? (
           <>
-            <h2
-              className={`${instrumentSerif.className} -mb-3 scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#542916] md:text-7xl`}
-              style={{
-                textShadow:
-                  "0.014em 0 0 currentColor, -0.014em 0 0 currentColor, 0 0.006em 0 currentColor, 0 8px 24px rgba(254,250,240,0.52)",
+            <motion.div
+              className="-mb-3"
+              initial={{ opacity: 0, filter: "blur(14px)", y: 32 }}
+              animate={isInView
+                ? { opacity: 1, filter: "blur(0px)", y: 0 }
+                : { opacity: 0, filter: "blur(14px)", y: 32 }}
+              transition={{
+                opacity: { duration: 0.55, delay: isInView ? 0.04 : 0, ease: "easeOut" },
+                filter: { duration: 0.65, delay: isInView ? 0.04 : 0, ease: "easeOut" },
+                y: { type: "spring", stiffness: 120, damping: 14, mass: 0.8, delay: isInView ? 0.04 : 0 },
               }}
             >
-              PROJECTS
-            </h2>
-            <div
+              <h2
+                className={`${instrumentSerif.className} scale-y-[0.82] text-center text-6xl font-bold italic leading-[0.9] tracking-[0.05em] text-[#542916] md:text-7xl`}
+                style={{
+                  textShadow:
+                    "0.014em 0 0 currentColor, -0.014em 0 0 currentColor, 0 0.006em 0 currentColor, 0 8px 24px rgba(254,250,240,0.52)",
+                }}
+              >
+                PROJECTS
+              </h2>
+            </motion.div>
+            <motion.div
               ref={terminalSplitRef}
-              className="relative flex w-full flex-col items-center justify-center gap-4 sm:pt-16 lg:flex-row lg:items-stretch lg:gap-0"
+              className="relative flex w-full flex-col items-center justify-center gap-4 pt-16 lg:flex-row lg:items-stretch lg:gap-0"
               style={{ "--terminal-share": `${terminalSplit}%` } as CSSProperties}
+              initial={{ opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+              animate={isInView
+                ? { opacity: 1, filter: "blur(0px)", y: 0, scale: 1 }
+                : { opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+              transition={{
+                opacity: { duration: 0.65, delay: isInView ? 0.12 : 0, ease: "easeOut" },
+                filter: { duration: 0.8, delay: isInView ? 0.12 : 0, ease: "easeOut" },
+                y: { type: "spring", stiffness: 105, damping: 13, mass: 0.9, delay: isInView ? 0.12 : 0 },
+                scale: { duration: 0.65, delay: isInView ? 0.12 : 0, ease: "easeOut" },
+              }}
             >
               {showBrowseHint && (
               <div
-                className={`${justMeAgainDownHere.className} pointer-events-none absolute top-7 z-20 hidden w-96 -translate-x-2 items-start justify-end text-right text-[1.35rem] tracking-wide text-[#a13a1e]/80 sm:flex ${
-                  showTerminalMedia ? "left-[calc(var(--terminal-share)-24rem)]" : "right-[7%]"
+                className={`${justMeAgainDownHere.className} pointer-events-none absolute top-7 z-20 flex max-w-[calc(100%-1rem)] items-start justify-end text-right text-lg tracking-wide text-[#a13a1e]/80 sm:text-[1.35rem] ${
+                  showTerminalMedia ? "right-[6%] lg:right-[calc(100%-var(--terminal-share))]" : "right-[6%] sm:right-[11%]"
                 }`}
               >
-                <span className="-translate-y-1 whitespace-nowrap">Prefer a simpler layout? Browse here</span>
+                <span className="-translate-y-1 leading-none sm:whitespace-nowrap">Prefer a simpler layout? Browse here</span>
                 <svg
                   className="ml-3 h-5 w-20 shrink-0 overflow-visible"
                   viewBox="0 0 80 48"
@@ -1242,7 +1264,7 @@ export function Projects() {
               <motion.div
                 layout
                 transition={{ duration: 0.22, ease: "easeInOut" }}
-                className={`flex h-[min(68vh,585px)] flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px] ${
+                className={`flex h-[clamp(640px,78svh,760px)] flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px] ${
                   showTerminalMedia
                     ? "w-[min(88vw,988px)] lg:w-[var(--terminal-share)] lg:max-w-none lg:shrink-0"
                     : "w-[min(78vw,988px)]"
@@ -1349,7 +1371,7 @@ export function Projects() {
                   </div>
                   <motion.aside
                   key={terminalProject.slug}
-                  className="flex h-[min(68vh,585px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/62 p-4 text-[#542916] shadow-[0_18px_50px_rgba(84,41,22,0.16)] backdrop-blur-md lg:w-auto lg:min-w-0 lg:flex-1"
+                  className="flex h-[clamp(640px,78svh,760px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/62 p-4 text-[#542916] shadow-[0_18px_50px_rgba(84,41,22,0.16)] backdrop-blur-md lg:w-auto lg:min-w-0 lg:flex-1"
                   initial={{ opacity: 0, x: 35, scale: 0.97 }}
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 35, scale: 0.97 }}
@@ -1397,7 +1419,7 @@ export function Projects() {
                   </motion.aside>
                 </>
               )}
-            </div>
+            </motion.div>
           </>
         ) : (
           <div className="w-full">
@@ -1427,9 +1449,9 @@ export function Projects() {
 
               {showTerminalHint && (
               <div
-                className={`${justMeAgainDownHere.className} pointer-events-none absolute right-0 top-[4rem] z-20 hidden w-96 items-start justify-end text-right text-[1.35rem] tracking-wide text-[#a13a1e]/80 sm:flex`}
+                className={`${justMeAgainDownHere.className} pointer-events-none absolute right-0 top-[4rem] z-20 flex max-w-[calc(100vw-3rem)] items-start justify-end text-right text-lg tracking-wide text-[#a13a1e]/80 sm:w-96 sm:text-[1.35rem]`}
               >
-                <span className="whitespace-nowrap">Prefer command-based navigation? Terminal here</span>
+                <span className="max-w-52 leading-none sm:max-w-none sm:whitespace-nowrap">Prefer command-based navigation? Terminal here</span>
                 <svg
                   className="ml-3 h-5 w-20 translate-y-3 shrink-0 overflow-visible"
                   viewBox="0 0 80 48"

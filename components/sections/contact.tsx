@@ -45,7 +45,7 @@ const noteLines = ["open to internships", "full-stack projects", "mobile apps", 
 
 export function Contact() {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, amount: 0.05 })
 
   return (
     <section

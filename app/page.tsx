@@ -23,7 +23,7 @@ export default function Home() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         aria-hidden={isLoading}
       >
-        <About />
+        <About isVisible={!isLoading} />
         <Projects />
         <Skills />
         <Experience />

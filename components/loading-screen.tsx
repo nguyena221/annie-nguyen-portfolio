@@ -155,14 +155,13 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       const clickTimer = setTimeout(() => {
         updateEdgePositions()
         setPhase("parking")
-        onComplete()
       }, 1200)
 
       return () => {
         clearTimeout(clickTimer)
       }
     }
-  }, [phase, onComplete, updateEdgePositions])
+  }, [phase, updateEdgePositions])
 
   useEffect(() => {
     if (phase !== "parking") {
@@ -171,10 +170,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
     const parkedTimer = setTimeout(() => {
       setPhase("parked")
+      onComplete()
     }, 1000)
 
     return () => clearTimeout(parkedTimer)
-  }, [phase])
+  }, [phase, onComplete])
 
   useEffect(() => {
     updateEdgePositions()

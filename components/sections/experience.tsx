@@ -43,7 +43,7 @@ const experiences = [
 
 export function Experience() {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, amount: 0.05 })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const selectedExperience = experiences[selectedIndex]
 
