@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
+// Keep framework behavior explicit here as deployment-specific options are introduced.
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
+  // Prevent a parent-directory lockfile from changing Turbopack's workspace boundary.
+  turbopack: {
+    root: process.cwd(),
   },
 }
 

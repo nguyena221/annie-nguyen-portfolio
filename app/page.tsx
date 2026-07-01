@@ -8,13 +8,16 @@ import { Skills } from "@/components/sections/skills"
 import { Experience } from "@/components/sections/experience"
 import { Contact } from "@/components/sections/contact"
 import { LoadingScreen } from "@/components/loading-screen"
+import { SectionDepth } from "@/components/section-depth"
 
+/** Composes the portfolio and reveals it only after the intro sequence parks. */
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
 
   return (
     <>
       <LoadingScreen onComplete={() => setIsLoading(false)} />
+      <SectionDepth />
       
       <motion.main
         className="min-h-screen"

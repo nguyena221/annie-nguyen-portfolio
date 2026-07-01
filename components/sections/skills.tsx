@@ -57,9 +57,11 @@ const toolsGroup = {
 
 const featuredSkills = ["React", "TypeScript", "Tailwind CSS", "Firebase", "React Native", "Java", "Python", "Figma"]
 
+/** Groups technical capabilities into an animated, scrapbook-inspired skills board. */
 export function Skills() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.05 })
+  const isActivelyInView = useInView(ref, { amount: 0.08 })
 
   return (
     <section
@@ -67,14 +69,26 @@ export function Skills() {
       ref={ref}
       className="relative overflow-hidden bg-[#88b8ce] px-6 py-20 text-[#542916] md:px-12 md:py-28 lg:px-24"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(254,250,240,0.68),transparent_28%),radial-gradient(circle_at_86%_80%,rgba(161,58,30,0.3),transparent_31%),radial-gradient(circle_at_12%_88%,rgba(241,193,102,0.28),transparent_28%),linear-gradient(180deg,rgba(136,184,206,0.88),rgba(161,58,30,0.2))]" />
-      <Image
-        src="/images/loading/ripped-paper-tape.png"
-        alt=""
-        width={210}
-        height={90}
-        className="pointer-events-none absolute left-4 top-10 hidden rotate-[-11deg] opacity-70 md:block"
+      <motion.div
+        className="pointer-events-none absolute -inset-[12%] bg-[radial-gradient(circle_at_14%_18%,rgba(254,250,240,0.68),transparent_28%),radial-gradient(circle_at_86%_80%,rgba(161,58,30,0.3),transparent_31%),radial-gradient(circle_at_12%_88%,rgba(241,193,102,0.28),transparent_28%),linear-gradient(180deg,rgba(136,184,206,0.88),rgba(161,58,30,0.2))]"
+        animate={isActivelyInView ? { x: [0, 38, -26, 0], y: [0, -24, 32, 0], scale: [1, 1.04, 1.02, 1] } : { x: 0, y: 0, scale: 1 }}
+        transition={{ duration: 8, repeat: isActivelyInView ? Infinity : 0, ease: "easeInOut" }}
       />
+      <motion.div
+        className="pointer-events-none absolute left-[12%] top-0 z-20 hidden md:block"
+        animate={isActivelyInView
+          ? { x: [0, 12, 0], y: [-42, -52, -42], rotate: [-6, -2, -6] }
+          : { x: 0, y: -42, rotate: -6 }}
+        transition={{ duration: 7, repeat: isActivelyInView ? Infinity : 0, ease: "easeInOut" }}
+      >
+        <Image
+          src="/images/loading/ripped-paper-tape.png"
+          alt=""
+          width={210}
+          height={90}
+          className="h-auto w-[170px] opacity-80 drop-shadow-[0_8px_10px_rgba(67,42,22,0.2)]"
+        />
+      </motion.div>
       <Image
         src="/images/loading/used-paper-clip.png"
         alt=""
@@ -107,7 +121,7 @@ export function Skills() {
             </h2>
           </div>
 
-          <div className="relative rounded-[8px] border border-[#a13a1e]/24 bg-[#fefaf0]/82 p-5 shadow-[0_16px_36px_rgba(84,41,22,0.18)] backdrop-blur">
+          <div className="depth-2 inset-sheen relative rounded-[8px] border border-[#a13a1e]/24 bg-[#fefaf0]/90 p-5">
             <div className="absolute -top-5 left-8 h-9 w-28 rotate-[-4deg] bg-[#a13a1e]/28 shadow-[0_5px_14px_rgba(84,41,22,0.14)]" />
             <p className="relative text-sm leading-6 text-[#542916] md:text-base">
               I usually work across product UI, mobile app flows, backend data, and the tools that keep projects
@@ -122,7 +136,7 @@ export function Skills() {
               initial={{ opacity: 0, x: -24 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-              className="relative min-h-[245px] rounded-[8px] border border-[#a13a1e]/24 bg-[#fefaf0] p-6 shadow-[0_18px_42px_rgba(84,41,22,0.2)] md:p-7"
+              className="depth-2 inset-sheen relative min-h-[245px] rounded-[8px] border border-[#a13a1e]/24 bg-[#fefaf0] p-6 md:p-7"
             >
             <Image
               src="/images/loading/paper-clip.png"
@@ -183,7 +197,7 @@ function SkillCard({
       initial={{ opacity: 0, y: 24, rotate: 0 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.48, delay: 0.08 + index * 0.08, ease: "easeOut" }}
-      className={`relative rounded-[8px] border border-[#a13a1e]/20 bg-[#fefaf0]/90 p-5 shadow-[0_12px_30px_rgba(84,41,22,0.16)] backdrop-blur transition-transform duration-300 hover:-translate-y-1 ${group.rotate}`}
+      className={`depth-2 relative rounded-[8px] border border-[#a13a1e]/20 bg-[#fefaf0]/94 p-5 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(84,41,22,0.2)] ${group.rotate}`}
     >
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">

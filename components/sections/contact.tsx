@@ -17,35 +17,39 @@ const justMeAgainDownHere = Just_Me_Again_Down_Here({
   weight: "400",
 })
 
+const emailHref = "mailto:nguyenannie221@gmail.com"
+
 const socialLinks = [
   {
     name: "Email",
-    href: "mailto:annie.nguyen@email.com",
+    href: emailHref,
     icon: Mail,
-    handle: "annie.nguyen@email.com",
+    handle: "nguyenannie221@gmail.com",
     detail: "Best for opportunities and project ideas",
   },
   {
     name: "GitHub",
-    href: "https://github.com",
+    href: "https://github.com/nguyena221",
     icon: Github,
-    handle: "@annienguyen",
+    handle: "@nguyena221",
     detail: "Projects, repos, and experiments",
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/nguyena221/",
     icon: Linkedin,
-    handle: "/in/annienguyen",
+    handle: "/in/nguyena221",
     detail: "Work, school, and professional updates",
   },
 ]
 
 const noteLines = ["open to internships", "full-stack projects", "mobile apps", "thoughtful design"]
 
+/** Collects direct contact actions and verified professional profile links. */
 export function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.05 })
+  const isActivelyInView = useInView(ref, { amount: 0.08 })
 
   return (
     <section
@@ -58,8 +62,10 @@ export function Contact() {
 
       <motion.div
         className="pointer-events-none absolute left-4 top-12 hidden md:block"
-        animate={{ y: [0, -12, 0], rotate: [-8, -11, -8] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        animate={isActivelyInView
+          ? { x: [0, 14, 0], y: [0, -18, 0], rotate: [-8, -12, -8] }
+          : { x: 0, y: 0, rotate: -8 }}
+        transition={{ duration: 7, repeat: isActivelyInView ? Infinity : 0, ease: "easeInOut" }}
       >
         <Image
           src="/images/loading/postcard.png"
@@ -71,8 +77,10 @@ export function Contact() {
       </motion.div>
       <motion.div
         className="pointer-events-none absolute bottom-10 right-4 hidden lg:block"
-        animate={{ y: [0, 14, 0], rotate: [9, 13, 9] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        animate={isActivelyInView
+          ? { x: [0, -12, 0], y: [0, 20, 0], rotate: [9, 14, 9] }
+          : { x: 0, y: 0, rotate: 9 }}
+        transition={{ duration: 8, repeat: isActivelyInView ? Infinity : 0, ease: "easeInOut" }}
       >
         <Image
           src="/images/loading/paper-clip.png"
@@ -121,7 +129,7 @@ export function Contact() {
             animate={isInView ? { opacity: 1, x: 0, rotate: -1 } : {}}
             transition={{ duration: 0.65, delay: 0.1, ease: "easeOut" }}
             whileHover={{ y: -5, rotate: -0.4 }}
-            className="relative min-h-[390px] overflow-hidden rounded-[8px] border border-[#fefaf0]/22 bg-[#fefaf0] p-6 text-[#542916] shadow-[0_30px_80px_rgba(54,21,12,0.34)] md:p-8"
+            className="depth-3 inset-sheen relative min-h-[390px] overflow-hidden rounded-[8px] border border-[#fefaf0]/22 bg-[#fefaf0] p-6 text-[#542916] md:p-8"
           >
             <div className="absolute inset-x-0 top-0 h-12 bg-[linear-gradient(90deg,rgba(161,58,30,0.14)_1px,transparent_1px)] bg-[size:18px_18px]" />
             <motion.div
@@ -162,7 +170,7 @@ export function Contact() {
                   size="lg"
                   className="h-12 rounded-[8px] bg-[#a13a1e] px-6 text-sm font-black uppercase tracking-[0.12em] text-white shadow-[0_12px_24px_rgba(161,58,30,0.25)] hover:bg-[#8f2f1c]"
                 >
-                  <a href="mailto:annie.nguyen@email.com">
+                  <a href={emailHref}>
                     <Send className="mr-2 size-4" />
                     Send a Message
                   </a>
@@ -192,7 +200,7 @@ export function Contact() {
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.48, delay: 0.2 + index * 0.1, ease: "easeOut" }}
                   whileHover={{ x: 6, scale: 1.01 }}
-                  className="group relative overflow-hidden rounded-[8px] border border-[#fefaf0]/18 bg-[#fefaf0]/12 p-5 shadow-[0_18px_45px_rgba(54,21,12,0.2)] backdrop-blur transition-colors hover:bg-[#fefaf0]/18 md:p-6"
+                  className="group depth-2 relative overflow-hidden rounded-[8px] border border-[#fefaf0]/18 bg-[#fefaf0]/14 p-5 backdrop-blur-sm transition-[background-color,transform,box-shadow] hover:-translate-y-1 hover:bg-[#fefaf0]/18 hover:shadow-[0_25px_55px_rgba(54,21,12,0.28)] md:p-6"
                 >
                   <motion.span
                     className="absolute inset-y-0 left-0 w-1 bg-[#f1c166]"

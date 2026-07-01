@@ -36,6 +36,7 @@ const buttonVariants = cva(
   },
 )
 
+/** Shared accessible button primitive used for portfolio calls to action. */
 function Button({
   className,
   variant,

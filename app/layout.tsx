@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
+// Fonts and metadata are centralized here so every portfolio section shares one document configuration.
 const inter = Inter({ 
   subsets: ["latin"],
   variable: '--font-inter',
@@ -15,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'Annie Nguyen | Software Developer',
-  description: 'Third-year Computer Science student at UVA passionate about building elegant digital experiences. Specializing in React, React Native, Firebase, and full-stack development.',
+  description: 'Fourth-year Computer Science student at UVA building thoughtful web, mobile, and full-stack digital experiences.',
   keywords: ['Software Developer', 'Web Developer', 'React', 'React Native', 'UVA', 'Computer Science', 'Portfolio'],
   authors: [{ name: 'Annie Nguyen' }],
   creator: 'Annie Nguyen',

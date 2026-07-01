@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   BrainCircuit,
   CalendarDays,
@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import { Instrument_Serif, Just_Me_Again_Down_Here } from "next/font/google"
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react"
+import { createPortal } from "react-dom"
 
 type ProjectSourceFile = "README.md" | "features.txt" | "stack.json" | "highlights.txt" | "structure.txt" | "links.txt"
 type TerminalProjectFile = "README.md" | "REFLECTION.md" | "STRUCTURE.md"
@@ -68,6 +69,7 @@ const justMeAgainDownHere = Just_Me_Again_Down_Here({
   weight: "400",
 })
 
+// Project records drive both the terminal filesystem and the visual case-study browser.
 const projects: Project[] = [
   {
     name: "Daily Grid",
@@ -714,8 +716,9 @@ const applyCompletion = (input: string, completion: string) => {
   return `${leadingWhitespace}${parts.slice(0, -1).join(" ")} ${completion}`
 }
 
+/** Provides terminal and visual browsing modes over one shared project data source. */
 export function Projects() {
-  const ref = useRef(null)
+  const ref = useRef<HTMLElement | null>(null)
   const outputRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const carouselShellRef = useRef<HTMLDivElement | null>(null)
@@ -724,7 +727,7 @@ export function Projects() {
   const carouselItemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const carouselSettleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const commandDraftRef = useRef("")
-  const isInView = useInView(ref, { amount: 0.12 })
+  const [isInView, setIsInView] = useState(false)
   const [view, setView] = useState<"terminal" | "browse">("terminal")
   const [showBrowseHint, setShowBrowseHint] = useState(true)
   const [showTerminalHint, setShowTerminalHint] = useState(true)
@@ -737,6 +740,7 @@ export function Projects() {
   const [carouselCenter, setCarouselCenter] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [terminalSplit, setTerminalSplit] = useState(68)
+  const [portalHost, setPortalHost] = useState<HTMLElement | null>(null)
   const [history, setHistory] = useState<TerminalEntry[]>([
     {
       cwd: "projects",
@@ -746,6 +750,43 @@ export function Projects() {
       ],
     },
   ])
+
+  useEffect(() => setPortalHost(document.body), [])
+
+  useEffect(() => {
+    const updateProjectEntrance = () => {
+      const section = ref.current
+
+      if (!section) {
+        return
+      }
+
+      const rect = section.getBoundingClientRect()
+      const enteringFromAbout = rect.top < window.innerHeight * 0.88
+      const backInAbout = rect.top >= window.innerHeight * 0.94
+
+      setIsInView((isRevealed) => {
+        if (backInAbout) {
+          return false
+        }
+
+        if (enteringFromAbout) {
+          return true
+        }
+
+        return isRevealed
+      })
+    }
+
+    updateProjectEntrance()
+    window.addEventListener("scroll", updateProjectEntrance, { passive: true })
+    window.addEventListener("resize", updateProjectEntrance)
+
+    return () => {
+      window.removeEventListener("scroll", updateProjectEntrance)
+      window.removeEventListener("resize", updateProjectEntrance)
+    }
+  }, [])
 
   const switchToBrowse = () => {
     setShowBrowseHint(false)
@@ -1234,7 +1275,7 @@ export function Projects() {
               <motion.div
                 layout
                 transition={{ duration: 0.22, ease: "easeInOut" }}
-                className={`relative flex h-[clamp(640px,78svh,760px)] flex-col overflow-visible rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 shadow-[0_18px_50px_rgba(84,41,22,0.18),inset_0_1px_0_rgba(254,250,240,0.52)] backdrop-blur-[3px] ${
+                className={`depth-3 inset-sheen relative flex h-[clamp(640px,78svh,760px)] flex-col overflow-visible rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 backdrop-blur-[3px] ${
                   showTerminalMedia
                     ? "w-[min(88vw,988px)] lg:w-[var(--terminal-share)] lg:max-w-none lg:shrink-0"
                     : "w-[min(78vw,988px)]"
@@ -1350,7 +1391,7 @@ export function Projects() {
                   </div>
                   <motion.aside
                   key={terminalProject.slug}
-                  className="flex h-[clamp(640px,78svh,760px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/62 p-4 text-[#542916] shadow-[0_18px_50px_rgba(84,41,22,0.16)] backdrop-blur-md lg:w-auto lg:min-w-0 lg:flex-1"
+                  className="flex h-[clamp(640px,78svh,760px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/72 p-4 text-[#542916] shadow-[0_18px_40px_rgba(84,41,22,0.16)] backdrop-blur-sm lg:w-auto lg:min-w-0 lg:flex-1"
                   initial={{ opacity: 0, x: 35, scale: 0.97 }}
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 35, scale: 0.97 }}
@@ -1472,7 +1513,7 @@ export function Projects() {
 
             <div
               ref={carouselShellRef}
-              className="relative mx-auto flex min-h-[205px] w-full max-w-[760px] flex-col justify-center overflow-hidden rounded-[999px] border border-[#a13a1e]/18 bg-[linear-gradient(180deg,#d98572_0%,#a13a1e_100%)] shadow-[inset_0_1px_0_rgba(254,250,240,0.36),0_22px_60px_rgba(84,41,22,0.18)] md:min-h-[260px]"
+              className="depth-3 inset-sheen relative mx-auto flex min-h-[205px] w-full max-w-[760px] flex-col justify-center overflow-hidden rounded-[999px] border border-[#a13a1e]/18 bg-[linear-gradient(180deg,#d98572_0%,#a13a1e_100%)] md:min-h-[260px]"
             >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(254,250,240,0.28),transparent_38%),radial-gradient(circle_at_18%_82%,rgba(241,193,102,0.18),transparent_30%)]" />
               <div
@@ -1510,7 +1551,7 @@ export function Projects() {
 
             <motion.div
               key={selectedProject.slug}
-              className="mx-auto mt-7 max-w-4xl rounded-[8px] border border-[#a13a1e]/16 bg-[#fefaf0]/86 p-5 text-[#542916] shadow-[0_16px_42px_rgba(84,41,22,0.16)] backdrop-blur md:p-6"
+              className="depth-2 inset-sheen mx-auto mt-7 max-w-4xl rounded-[8px] border border-[#a13a1e]/16 bg-[#fefaf0]/94 p-5 text-[#542916] md:p-6"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
@@ -1670,7 +1711,7 @@ export function Projects() {
         )}
       </motion.div>
 
-      {lightboxIndex !== null && selectedImages[lightboxIndex] && (
+      {portalHost && lightboxIndex !== null && selectedImages[lightboxIndex] && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1d0d07]/92 p-4 backdrop-blur-sm md:p-10"
           role="dialog"
@@ -1725,7 +1766,8 @@ export function Projects() {
               <ChevronRight className="size-7" />
             </button>
           )}
-        </div>
+        </div>,
+        portalHost,
       )}
     </section>
   )

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* Global design tokens and shared material, depth, and motion behavior. */
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -143,4 +144,152 @@
 
 .blob-2 {
   border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+/* Shared tactile depth system */
+.depth-1 {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.58) inset,
+    0 12px 25px rgba(67, 42, 22, 0.16),
+    0 3px 8px rgba(67, 42, 22, 0.12);
+}
+
+.depth-2 {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.68) inset,
+    0 20px 38px rgba(67, 42, 22, 0.23),
+    0 7px 17px rgba(67, 42, 22, 0.15);
+}
+
+.depth-3 {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 30px 58px rgba(67, 42, 22, 0.29),
+    0 11px 24px rgba(67, 42, 22, 0.18);
+}
+
+.interactive-lift {
+  transform: translateZ(0);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  will-change: transform;
+}
+
+.interactive-lift:hover,
+.interactive-lift:focus-within {
+  transform: translate3d(0, -8px, 0) scale(1.012);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 26px 46px rgba(67, 42, 22, 0.27),
+    0 9px 20px rgba(67, 42, 22, 0.16);
+}
+
+.inset-sheen {
+  position: relative;
+}
+
+.inset-sheen::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.62) inset,
+    1px 0 0 rgba(255, 255, 255, 0.24) inset,
+    0 -1px 0 rgba(67, 42, 22, 0.08) inset;
+  content: "";
+  pointer-events: none;
+}
+
+section[id]::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(84, 41, 22, 0.18) 0,
+    rgba(84, 41, 22, 0.18) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  content: "";
+  opacity: 0.045;
+  pointer-events: none;
+}
+
+main > section[id] {
+  --section-lift: 0px;
+  --section-scale: 1;
+  --section-shade: 0;
+  isolation: isolate;
+  transform: translate3d(0, var(--section-lift), 0) scale(var(--section-scale));
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+main > section[id]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(40, 24, 16, var(--section-shade));
+  content: "";
+  pointer-events: none;
+}
+
+main > section[id]:not(:first-of-type) {
+  margin-top: -56px;
+  border-top: 2px solid rgba(255, 255, 255, 0.64);
+  box-shadow:
+    0 -2px 0 rgba(84, 41, 22, 0.16),
+    0 -24px 42px rgba(67, 42, 22, 0.28),
+    0 -9px 22px rgba(67, 42, 22, 0.16);
+}
+
+#about { z-index: 1; }
+#projects { z-index: 2; }
+#skills { z-index: 3; }
+#experience { z-index: 4; }
+#contact { z-index: 5; }
+
+.loading-collage > div img {
+  transform: translate3d(
+    var(--parallax-x, 0px),
+    var(--parallax-y, 0px),
+    0
+  );
+  transition: transform 180ms ease-out;
+  will-change: transform;
+}
+
+.loading-collage > div:nth-child(3n + 2) img {
+  transform: translate3d(
+    var(--parallax-x-reverse, 0px),
+    var(--parallax-y-reverse, 0px),
+    0
+  );
+}
+
+.loading-collage > div:nth-child(3n + 3) img {
+  transform: translate3d(
+    var(--parallax-x-far, 0px),
+    var(--parallax-y-far, 0px),
+    0
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-lift,
+  .loading-collage > div img {
+    transition: none;
+  }
+
+  .interactive-lift:hover,
+  .interactive-lift:focus-within,
+  .loading-collage > div img {
+    transform: none;
+  }
+
+  main > section[id] {
+    transform: none;
+    transition: none;
+  }
 }

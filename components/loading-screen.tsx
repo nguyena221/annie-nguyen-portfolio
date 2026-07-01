@@ -59,6 +59,7 @@ const navItems = [
   { name: "Contact", href: "#contact", Icon: Mail },
 ]
 
+/** Runs the intro sequence, then owns the decorative edge collage and compact navigation. */
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [phase, setPhase] = useState<"shaking" | "clicking" | "parking" | "parked">("shaking")
   const [cursorPosition, setCursorPosition] = useState({ x: 100, y: 100 })
@@ -71,6 +72,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     edgeTargets.map(({ rotate }) => ({ x: 0, y: 0, rotate }))
   )
   const collageRef = useRef<HTMLDivElement | null>(null)
+  const visualRootRef = useRef<HTMLDivElement | null>(null)
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const updateEdgePositions = useCallback(() => {
@@ -184,6 +186,26 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   }, [updateEdgePositions])
 
   useEffect(() => {
+    const updateParallax = (event: PointerEvent) => {
+      if (phase !== "parked" || !isAboutVisible || !visualRootRef.current) {
+        return
+      }
+
+      const x = ((event.clientX / window.innerWidth) - 0.5) * 24
+      const y = ((event.clientY / window.innerHeight) - 0.5) * 18
+      visualRootRef.current.style.setProperty("--parallax-x", `${x * 0.45}px`)
+      visualRootRef.current.style.setProperty("--parallax-y", `${y * 0.45}px`)
+      visualRootRef.current.style.setProperty("--parallax-x-reverse", `${x * -0.3}px`)
+      visualRootRef.current.style.setProperty("--parallax-y-reverse", `${y * -0.3}px`)
+      visualRootRef.current.style.setProperty("--parallax-x-far", `${x * 0.75}px`)
+      visualRootRef.current.style.setProperty("--parallax-y-far", `${y * 0.75}px`)
+    }
+
+    window.addEventListener("pointermove", updateParallax, { passive: true })
+    return () => window.removeEventListener("pointermove", updateParallax)
+  }, [isAboutVisible, phase])
+
+  useEffect(() => {
     const aboutSection = document.getElementById("about")
     const projectsSection = document.getElementById("projects")
 
@@ -254,6 +276,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   return (
     <motion.div
+      ref={visualRootRef}
       className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center overflow-hidden"
       initial={{ opacity: 1 }}
     >
@@ -268,7 +291,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           />
 
           {/* Main collage container */}
-          <div ref={collageRef} className="relative z-10 h-[605px] w-[905px] max-w-[92vw] -translate-y-6">
+          <div ref={collageRef} className="loading-collage relative z-10 h-[605px] w-[905px] max-w-[92vw] -translate-y-6">
             
             {/* Profile Card */}
             <motion.div

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useInView } from "framer-motion"
-import { ArrowUpRight, BriefcaseBusiness, CalendarDays, CheckCircle2, MapPin } from "lucide-react"
+import { BriefcaseBusiness, CalendarDays, CheckCircle2, MapPin } from "lucide-react"
 import { Instrument_Serif } from "next/font/google"
 import { useRef, useState } from "react"
 
@@ -12,35 +12,44 @@ const instrumentSerif = Instrument_Serif({
 
 const experiences = [
   {
-    title: "Software Engineering Intern",
-    company: "Tech Company",
-    companyUrl: "#",
-    date: "Summer 2024",
-    location: "Internship",
+    title: "Web Developer Intern",
+    company: "WoMen of Connections Ministry",
+    date: "October 2025 - December 2025",
+    location: "Remote / Internship & Volunteer",
+    overview:
+      "Supported the organization's main WordPress website by improving layouts and presenting resources, announcements, and ministry information in a clear, accessible format. Collaborated with designers, developers, and team members to deliver responsive updates aligned with organizational goals.",
     description: [
-      "Developed and maintained full-stack web applications using React, Node.js, and PostgreSQL",
-      "Collaborated with cross-functional teams to design and implement new features",
-      "Participated in code reviews and contributed to improving development processes",
-      "Built RESTful APIs and integrated third-party services",
+      "Designed and updated responsive WordPress pages using Elementor, HTML, CSS, and JavaScript to improve usability and content organization.",
+      "Maintained and modified 10+ pages highlighting resources, announcements, and organizational updates.",
+      "Collaborated with cross-functional team members to implement design changes, review feedback, and deliver polished web features.",
+      "Tested across 4+ browsers and 3+ device types to ensure consistent layouts and functionality.",
+      "Improved accessibility, search visibility, and audience engagement by organizing content around user needs and ministry objectives.",
     ],
-    tech: ["React", "Node.js", "PostgreSQL", "REST APIs"],
+    learned:
+      "This experience strengthened my technical and professional skills in a remote team environment. I gained more hands-on experience with WordPress, Elementor, JavaScript, HTML, and CSS while learning to organize website content around an organization's goals. I also strengthened my communication skills by collaborating with designers and developers, clarifying content needs, responding to feedback, and ensuring each update accurately reflected the ministry's resources and information.",
+    tech: ["WordPress", "Elementor", "HTML", "CSS", "JavaScript"],
   },
   {
-    title: "Web Developer Volunteer",
-    company: "Women of Connections",
-    companyUrl: "#",
-    date: "2023 - Present",
-    location: "Volunteer",
+    title: "Receptionist & Web Developer",
+    company: "Pro Nails",
+    date: "June 2021 - August 2023",
+    location: "Waynesboro, VA",
+    overview:
+      "Managed front-desk operations while independently developing the salon's first official website to strengthen its online presence and make business information easier for clients to access. Served as the main technical point of contact, working with the owner to organize services, contact details, and client-facing information.",
     description: [
-      "Design and maintain the organization's web presence to empower women in tech",
-      "Implement responsive, accessible web pages following modern best practices",
-      "Collaborate with stakeholders to translate requirements into features",
-      "Mentor junior volunteers in web development fundamentals",
+      "Independently designed, developed, and launched the salon's first official website across 3+ pages showcasing services, business information, and contact details.",
+      "Translated business needs into a clean, user-friendly website structure through regular communication with the salon owner and staff.",
+      "Guided clients through 10+ service options and provided personalized recommendations to support client satisfaction.",
+      "Coordinated daily appointment scheduling to improve booking flow, reduce confusion, and support employee productivity.",
+      "Processed payments, answered client questions, and maintained an organized reception area to support smooth daily operations.",
     ],
-    tech: ["HTML", "CSS", "JavaScript", "WordPress"],
+    learned:
+      "This experience taught me how to take a website from an idea to a live product. Through my first real deployment, I learned to prepare a site for launch, organize client-facing content, test pages before publishing, and make information accessible to real users. Serving as the project's main technical contact also strengthened my ability to gather business needs, explain technical decisions clearly, and turn salon information into a useful digital experience for customers.",
+    tech: ["HTML", "CSS", "JavaScript", "Vercel"],
   },
 ]
 
+/** Lets visitors compare verified roles, contributions, tools, and learning outcomes. */
 export function Experience() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.05 })
@@ -100,7 +109,7 @@ export function Experience() {
           initial={{ opacity: 0, y: 28 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-          className="grid overflow-hidden rounded-[8px] border border-[#5f4638]/12 bg-white/70 shadow-[0_22px_60px_rgba(53,37,28,0.12)] backdrop-blur lg:grid-cols-[0.42fr_0.58fr]"
+          className="depth-3 inset-sheen grid overflow-hidden rounded-[8px] border border-[#5f4638]/12 bg-white/80 lg:grid-cols-[0.42fr_0.58fr]"
         >
           <div className="border-b border-[#5f4638]/12 bg-[#f7efe2] p-5 md:p-7 lg:border-b-0 lg:border-r">
             <div className="mb-5 flex items-center justify-between gap-4">
@@ -119,7 +128,7 @@ export function Experience() {
                     key={experience.title + experience.company}
                     type="button"
                     onClick={() => setSelectedIndex(index)}
-                    className={`group grid grid-cols-[auto_1fr] gap-4 rounded-[8px] border p-4 text-left transition-all duration-300 ${
+                    className={`group interactive-lift grid grid-cols-[auto_1fr] gap-4 rounded-[8px] border p-4 text-left transition-all duration-300 ${
                       isSelected
                         ? "border-[#8f432d]/35 bg-white shadow-[0_12px_28px_rgba(53,37,28,0.12)]"
                         : "border-[#5f4638]/10 bg-white/45 hover:border-[#8f432d]/24 hover:bg-white/80"
@@ -169,15 +178,9 @@ export function Experience() {
                   <h3 className="text-2xl font-black leading-tight text-[#35251c] md:text-3xl">
                     {selectedExperience.title}
                   </h3>
-                  <a
-                    href={selectedExperience.companyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-[#8f432d] underline-offset-4 hover:underline"
-                  >
+                  <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-[#8f432d]">
                     {selectedExperience.company}
-                    <ArrowUpRight className="size-4" />
-                  </a>
+                  </p>
                 </div>
 
                 <div className="rounded-[8px] border border-[#5f4638]/12 bg-[#f7efe2] px-4 py-3 text-sm font-semibold text-[#5f4638]">
@@ -186,6 +189,9 @@ export function Experience() {
               </div>
 
               <div className="mb-7">
+                <p className="mb-3 text-sm leading-6 text-[#4f3a30] md:text-[0.95rem] md:leading-7">
+                  {selectedExperience.overview}
+                </p>
                 <p className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-[#8f432d]">
                   Scope and Contributions
                 </p>
@@ -197,6 +203,15 @@ export function Experience() {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="mb-7 rounded-[8px] border border-[#8f432d]/14 bg-[#f7efe2] p-4 md:p-5">
+                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-[#8f432d]">
+                  What I Learned
+                </p>
+                <p className="text-sm leading-6 text-[#4f3a30] md:text-[0.95rem] md:leading-7">
+                  {selectedExperience.learned}
+                </p>
               </div>
 
               <div className="mt-auto border-t border-[#5f4638]/12 pt-5">

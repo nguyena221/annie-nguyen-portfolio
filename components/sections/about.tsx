@@ -19,6 +19,7 @@ type AboutProps = {
   isVisible: boolean
 }
 
+/** Presents the biography and keeps instructional hints aligned with their live targets. */
 export function About({ isVisible }: AboutProps) {
   const hasEnteredAbout = useRef(false)
   const hoverDismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -173,17 +174,17 @@ export function About({ isVisible }: AboutProps) {
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.35),transparent_28%,transparent_72%,rgba(255,255,255,0.28))]" />
       {hintHost && isVisible && createPortal(<motion.div
-        className="pointer-events-none fixed bottom-[5rem] left-[5.5rem] z-[100] hidden w-20 text-center md:block"
+        className="pointer-events-none fixed bottom-[5rem] left-[5.5rem] z-[100] hidden w-20 text-center text-white mix-blend-difference md:block"
         initial={{ opacity: 0 }}
         animate={{ opacity: showClickHint ? 1 : 0 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
         aria-hidden={!showClickHint}
       >
-        <p className={`${justMeAgainDownHere.className} -mb-1 text-3xl leading-none tracking-normal text-[#8f432d]`}>
+        <p className={`${justMeAgainDownHere.className} -mb-1 text-3xl leading-none tracking-normal`}>
           click me!
         </p>
         <svg
-          className="mx-auto h-16 w-20 -translate-x-8 overflow-visible text-[#8f432d]"
+          className="mx-auto h-16 w-20 -translate-x-8 overflow-visible"
           viewBox="0 0 80 64"
           fill="none"
           aria-hidden="true"
@@ -316,7 +317,7 @@ export function About({ isVisible }: AboutProps) {
           <motion.img
             src="/images/about/portfolio-about-photo.png"
             alt="Portrait of Annie Nguyen"
-            className="h-auto w-full object-contain drop-shadow-[0_18px_26px_rgba(67,55,31,0.28)]"
+            className="h-auto w-full object-contain drop-shadow-[0_26px_34px_rgba(67,55,31,0.3)]"
             animate={{
               rotateX: tilt.rotateX,
               rotateY: tilt.rotateY,
