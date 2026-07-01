@@ -1,0 +1,57 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paper" x1="70" y1="28" x2="1125" y2="602" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FEFAF0"/>
+      <stop offset="0.52" stop-color="#F8F1D9"/>
+      <stop offset="1" stop-color="#E8BB67"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#542916" flood-opacity="0.18"/>
+    </filter>
+    <pattern id="grain" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="5" r="1" fill="#542916" fill-opacity="0.035"/>
+      <circle cx="17" cy="14" r="0.8" fill="#515987" fill-opacity="0.04"/>
+      <circle cx="9" cy="21" r="0.7" fill="#A13A1E" fill-opacity="0.035"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#515987"/>
+  <circle cx="1085" cy="74" r="178" fill="#E8BB67" fill-opacity="0.92"/>
+  <circle cx="86" cy="576" r="215" fill="#A13A1E" fill-opacity="0.72"/>
+  <path d="M0 100C184 21 315 73 442 19C576 -38 721 38 842 3H0V100Z" fill="#FEFAF0" fill-opacity="0.12"/>
+
+  <g filter="url(#shadow)">
+    <rect x="74" y="62" width="1052" height="506" rx="28" fill="url(#paper)"/>
+    <rect x="74" y="62" width="1052" height="506" rx="28" fill="url(#grain)"/>
+  </g>
+
+  <g transform="translate(844 116) rotate(7)">
+    <rect width="210" height="276" rx="8" fill="#FEFAF0" stroke="#542916" stroke-opacity="0.15" stroke-width="2"/>
+    <rect x="16" y="16" width="178" height="196" rx="4" fill="#515987"/>
+    <path d="M54 164C77 132 97 144 118 111C135 85 158 93 177 61V196H33C38 185 45 174 54 164Z" fill="#E8BB67"/>
+    <circle cx="73" cy="76" r="28" fill="#F8F1D9"/>
+    <path d="M49 166L84 125L113 151L144 108L181 165V196H49V166Z" fill="#A13A1E" fill-opacity="0.9"/>
+    <text x="105" y="244" text-anchor="middle" fill="#542916" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="2">PORTFOLIO</text>
+  </g>
+
+  <rect x="122" y="111" width="176" height="34" rx="17" fill="#E8BB67"/>
+  <text x="210" y="134" text-anchor="middle" fill="#542916" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.2">SOFTWARE DEVELOPER</text>
+
+  <text x="120" y="244" fill="#542916" font-family="Georgia, serif" font-size="76" font-weight="700">Annie Nguyen</text>
+  <text x="124" y="297" fill="#515987" font-family="Arial, sans-serif" font-size="27" font-weight="600">Web, mobile, data, and full-stack projects</text>
+
+  <line x1="122" y1="342" x2="741" y2="342" stroke="#A13A1E" stroke-width="3" stroke-linecap="round"/>
+
+  <g font-family="Arial, sans-serif" font-size="18" font-weight="700">
+    <rect x="122" y="383" width="112" height="42" rx="21" fill="#515987"/>
+    <text x="178" y="410" text-anchor="middle" fill="#FEFAF0">React</text>
+    <rect x="248" y="383" width="154" height="42" rx="21" fill="#A13A1E"/>
+    <text x="325" y="410" text-anchor="middle" fill="#FEFAF0">TypeScript</text>
+    <rect x="416" y="383" width="116" height="42" rx="21" fill="#E8BB67"/>
+    <text x="474" y="410" text-anchor="middle" fill="#542916">Next.js</text>
+  </g>
+
+  <text x="122" y="492" fill="#542916" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="2.5">THOUGHTFUL DIGITAL EXPERIENCES</text>
+  <path d="M1001 475C1021 455 1053 455 1073 475C1093 495 1093 527 1073 547C1053 567 1021 567 1001 547C981 527 981 495 1001 475Z" fill="#515987"/>
+  <path d="M1017 511H1057M1037 491V531" stroke="#FEFAF0" stroke-width="4" stroke-linecap="round"/>
+</svg>

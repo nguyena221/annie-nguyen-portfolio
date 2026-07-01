@@ -38,6 +38,7 @@ type Project = {
   links: {
     live?: string
     github?: string
+    repositoryNote?: string
   }
   files: Record<ProjectSourceFile, string>
 }
@@ -446,7 +447,10 @@ demo: Coming soon`,
       "Set up database and backend API foundations",
       "Contributed to filtering, ranking, embeddings, and Ollama integration",
     ],
-    links: { github: "https://github.com/byuk729/aiProject" },
+    links: {
+      github: "https://github.com/byuk729/aiProject",
+      repositoryNote: "Group repository hosted under a teammate's GitHub account.",
+    },
     files: {
       "README.md": `# AI Grocery Assistant
 Completed · Spring 2026 · Python, FastAPI, React, TypeScript, Ollama
@@ -479,7 +483,8 @@ In this group project, I focused on product data, database and API setup, and se
 ├── data/
 ├── models/
 └── README.md`,
-      "links.txt": `github: https://github.com/byuk729/aiProject`,
+      "links.txt": `github: https://github.com/byuk729/aiProject
+note: Group repository hosted under a teammate's GitHub account.`,
     },
   },
 ]
@@ -1569,28 +1574,35 @@ export function Projects() {
                   <p className="mt-3 max-w-3xl text-sm leading-6 md:text-base">{selectedDetails.summary}</p>
                 </div>
 
-                <div className="flex shrink-0 gap-2">
-                  {selectedProject.links.github && (
-                    <a
-                      href={selectedProject.links.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="grid size-10 place-items-center rounded-full bg-[#542916] text-[#fefaf0] transition hover:bg-[#a13a1e]"
-                      aria-label={`${selectedProject.name} GitHub`}
-                    >
-                      <Github className="size-4" />
-                    </a>
-                  )}
-                  {selectedProject.links.live && (
-                    <a
-                      href={selectedProject.links.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="grid size-10 place-items-center rounded-full bg-[#a13a1e] text-[#fefaf0] transition hover:bg-[#542916]"
-                      aria-label={`${selectedProject.name} live site`}
-                    >
-                      <ExternalLink className="size-4" />
-                    </a>
+                <div className="flex shrink-0 flex-col items-start gap-2 md:items-end">
+                  <div className="flex gap-2">
+                    {selectedProject.links.github && (
+                      <a
+                        href={selectedProject.links.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="grid size-10 place-items-center rounded-full bg-[#542916] text-[#fefaf0] transition hover:bg-[#a13a1e]"
+                        aria-label={`${selectedProject.name} GitHub`}
+                      >
+                        <Github className="size-4" />
+                      </a>
+                    )}
+                    {selectedProject.links.live && (
+                      <a
+                        href={selectedProject.links.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="grid size-10 place-items-center rounded-full bg-[#a13a1e] text-[#fefaf0] transition hover:bg-[#542916]"
+                        aria-label={`${selectedProject.name} live site`}
+                      >
+                        <ExternalLink className="size-4" />
+                      </a>
+                    )}
+                  </div>
+                  {selectedProject.links.repositoryNote && (
+                    <p className="max-w-64 text-xs leading-5 text-[#542916]/70 md:text-right">
+                      {selectedProject.links.repositoryNote}
+                    </p>
                   )}
                 </div>
               </div>

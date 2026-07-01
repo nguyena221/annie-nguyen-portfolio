@@ -28,14 +28,14 @@ A responsive personal portfolio for Annie Nguyen, a Computer Science student and
 
 Requirements:
 
-- Node.js 20 or newer
+- Node.js 24 LTS (Node.js 26 may produce repeated deprecation warnings during development)
 - npm
 
 Install dependencies and start the development server:
 
 ```bash
 npm install
-npm run dev
+npm run dev -- --webpack
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -43,9 +43,9 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Scripts
 
 ```bash
-npm run dev      # Start the local development server
-npm run build    # Create an optimized production build
-npm run start    # Run the production build
+npm run dev -- --webpack  # Start the local development server
+npm run build             # Create an optimized production build
+npm run start             # Run the production build
 ```
 
 ## Project Structure

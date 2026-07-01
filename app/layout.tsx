@@ -14,7 +14,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'http://localhost:3000')
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'Annie Nguyen | Software Developer',
   description: 'Fourth-year Computer Science student at UVA building thoughtful web, mobile, and full-stack digital experiences.',
   keywords: ['Software Developer', 'Web Developer', 'React', 'React Native', 'UVA', 'Computer Science', 'Portfolio'],
@@ -22,6 +28,27 @@ export const metadata: Metadata = {
   creator: 'Annie Nguyen',
   icons: {
     icon: '/icon.svg',
+  },
+  openGraph: {
+    title: 'Annie Nguyen | Software Developer',
+    description: 'A responsive portfolio featuring web, mobile, data, and full-stack projects.',
+    url: '/',
+    siteName: 'Annie Nguyen Portfolio',
+    images: [
+      {
+        url: '/portfolio-preview.png',
+        width: 1200,
+        height: 630,
+        alt: "Preview of Annie Nguyen's portfolio website",
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Annie Nguyen | Software Developer',
+    description: 'A responsive portfolio featuring web, mobile, data, and full-stack projects.',
+    images: ['/portfolio-preview.png'],
   },
 }
 
