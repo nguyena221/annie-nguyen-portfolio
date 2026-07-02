@@ -55,7 +55,7 @@ export function Contact() {
     <section
       id="contact"
       ref={ref}
-      className="relative overflow-hidden bg-[#a13a1e] px-6 py-20 text-[#fefaf0] md:px-12 md:py-28 lg:px-24"
+      className="relative overflow-hidden bg-[#a13a1e] px-6 pb-28 pt-20 text-[#fefaf0] md:px-12 md:pb-36 md:pt-28 lg:px-24"
     >
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,#8f2f1c_0%,#a13a1e_42%,#5f4638_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-20 bg-[linear-gradient(90deg,rgba(254,250,240,0.18)_1px,transparent_1px),linear-gradient(180deg,rgba(254,250,240,0.14)_1px,transparent_1px)] bg-[size:44px_44px]" />
@@ -134,8 +134,8 @@ export function Contact() {
             <div className="absolute inset-x-0 top-0 h-12 bg-[linear-gradient(90deg,rgba(161,58,30,0.14)_1px,transparent_1px)] bg-[size:18px_18px]" />
             <motion.div
               className="absolute right-6 top-6 h-16 w-16 rounded-[8px] border-2 border-dashed border-[#a13a1e]/35"
-              animate={{ rotate: [2, -3, 2] }}
-              transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+              animate={isActivelyInView ? { rotate: [2, -3, 2] } : { rotate: 2 }}
+              transition={{ duration: 5.5, repeat: isActivelyInView ? Infinity : 0, ease: "easeInOut" }}
             />
 
             <div className="relative pt-8">

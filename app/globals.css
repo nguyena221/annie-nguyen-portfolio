@@ -217,22 +217,7 @@ section[id]::after {
 }
 
 main > section[id] {
-  --section-lift: 0px;
-  --section-scale: 1;
-  --section-shade: 0;
   isolation: isolate;
-  transform: translate3d(0, var(--section-lift), 0) scale(var(--section-scale));
-  transform-origin: 50% 0;
-  will-change: transform;
-}
-
-main > section[id]::before {
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  background: rgba(40, 24, 16, var(--section-shade));
-  content: "";
-  pointer-events: none;
 }
 
 main > section[id]:not(:first-of-type) {
@@ -288,8 +273,4 @@ main > section[id]:not(:first-of-type) {
     transform: none;
   }
 
-  main > section[id] {
-    transform: none;
-    transition: none;
-  }
 }

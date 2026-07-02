@@ -186,6 +186,8 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   }, [updateEdgePositions])
 
   useEffect(() => {
+    let frame = 0
+
     const updateParallax = (event: PointerEvent) => {
       if (phase !== "parked" || !isAboutVisible || !visualRootRef.current) {
         return
@@ -193,16 +195,23 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       const x = ((event.clientX / window.innerWidth) - 0.5) * 24
       const y = ((event.clientY / window.innerHeight) - 0.5) * 18
-      visualRootRef.current.style.setProperty("--parallax-x", `${x * 0.45}px`)
-      visualRootRef.current.style.setProperty("--parallax-y", `${y * 0.45}px`)
-      visualRootRef.current.style.setProperty("--parallax-x-reverse", `${x * -0.3}px`)
-      visualRootRef.current.style.setProperty("--parallax-y-reverse", `${y * -0.3}px`)
-      visualRootRef.current.style.setProperty("--parallax-x-far", `${x * 0.75}px`)
-      visualRootRef.current.style.setProperty("--parallax-y-far", `${y * 0.75}px`)
+
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        visualRootRef.current?.style.setProperty("--parallax-x", `${x * 0.45}px`)
+        visualRootRef.current?.style.setProperty("--parallax-y", `${y * 0.45}px`)
+        visualRootRef.current?.style.setProperty("--parallax-x-reverse", `${x * -0.3}px`)
+        visualRootRef.current?.style.setProperty("--parallax-y-reverse", `${y * -0.3}px`)
+        visualRootRef.current?.style.setProperty("--parallax-x-far", `${x * 0.75}px`)
+        visualRootRef.current?.style.setProperty("--parallax-y-far", `${y * 0.75}px`)
+      })
     }
 
     window.addEventListener("pointermove", updateParallax, { passive: true })
-    return () => window.removeEventListener("pointermove", updateParallax)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("pointermove", updateParallax)
+    }
   }, [isAboutVisible, phase])
 
   useEffect(() => {
@@ -567,7 +576,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           <motion.p
             className="absolute bottom-12 left-1/2 -translate-x-1/2 text-sm text-gray-500 tracking-widest"
             animate={phase === "parking" || phase === "parked" ? { opacity: 0 } : { opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            transition={{ duration: 1.5, repeat: phase === "parking" || phase === "parked" ? 0 : Infinity }}
           >
             {phase === "shaking" && "loading..."}
             {phase === "clicking" && "opening..."}

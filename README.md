@@ -2,6 +2,8 @@
 
 A responsive personal portfolio for Annie Nguyen, a Computer Science student and software developer. The site combines a scrapbook-inspired visual identity with interactive project exploration, professional experience, technical skills, and contact information.
 
+**Live site:** [annie-nguyen-portfolio.vercel.app](https://annie-nguyen-portfolio.vercel.app/)
+
 ## Features
 
 - Animated collage loading sequence with persistent edge navigation

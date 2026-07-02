@@ -67,7 +67,7 @@ export function Skills() {
     <section
       id="skills"
       ref={ref}
-      className="relative overflow-hidden bg-[#88b8ce] px-6 py-20 text-[#542916] md:px-12 md:py-28 lg:px-24"
+      className="relative overflow-hidden bg-[#88b8ce] px-6 pb-28 pt-20 text-[#542916] md:px-12 md:pb-36 md:pt-28 lg:px-24"
     >
       <motion.div
         className="pointer-events-none absolute -inset-[12%] bg-[radial-gradient(circle_at_14%_18%,rgba(254,250,240,0.68),transparent_28%),radial-gradient(circle_at_86%_80%,rgba(161,58,30,0.3),transparent_31%),radial-gradient(circle_at_12%_88%,rgba(241,193,102,0.28),transparent_28%),linear-gradient(180deg,rgba(136,184,206,0.88),rgba(161,58,30,0.2))]"

@@ -60,7 +60,7 @@ export function Experience() {
     <section
       id="experience"
       ref={ref}
-      className="relative overflow-hidden bg-[#fbf7ec] px-6 py-20 text-[#35251c] md:px-12 md:py-28 lg:px-24"
+      className="relative overflow-hidden bg-[#fbf7ec] px-6 pb-28 pt-20 text-[#35251c] md:px-12 md:pb-36 md:pt-28 lg:px-24"
     >
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#fbf7ec_0%,#f3ead9_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#5f4638]/12" />

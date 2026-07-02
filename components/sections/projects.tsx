@@ -542,7 +542,7 @@ const projectDetails: Record<string, ProjectDetails> = {
 
 const projectMedia: Partial<Record<string, ProjectMedia[]>> = {
   gamedate: [
-    { type: "video", src: "/images/projects/gamedate/demo.mov", label: "GameDate app demo" },
+    { type: "video", src: "/images/projects/gamedate/demo.mp4", label: "GameDate app demo" },
   ],
   "task-manager": [
     { type: "video", src: "/images/projects/task-manager/demo.mov", label: "Task Manager app demo" },
@@ -652,12 +652,8 @@ const iconMap = {
   grocery: ShoppingBasket,
 }
 
-const carouselRepeatCount = 7
-const carouselMiddleSet = Math.floor(carouselRepeatCount / 2)
-const carouselMiddleStart = projects.length * carouselMiddleSet
-const carouselLowerBoundary = projects.length * 2
-const carouselUpperBoundary = projects.length * (carouselRepeatCount - 2)
-const carouselProjects = Array.from({ length: carouselRepeatCount }).flatMap(() => projects)
+const carouselItems = Array.from({ length: 3 }).flatMap(() => projects)
+const carouselMiddleStart = projects.length
 
 const getHelpOutput = () => [
   "View:",
@@ -726,11 +722,13 @@ export function Projects() {
   const ref = useRef<HTMLElement | null>(null)
   const outputRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const carouselShellRef = useRef<HTMLDivElement | null>(null)
   const terminalSplitRef = useRef<HTMLDivElement | null>(null)
+  const carouselShellRef = useRef<HTMLDivElement | null>(null)
   const carouselRef = useRef<HTMLDivElement | null>(null)
   const carouselItemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const carouselSettleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const carouselWheelUnlockTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const carouselWheelLocked = useRef(false)
   const commandDraftRef = useRef("")
   const [isInView, setIsInView] = useState(false)
   const [view, setView] = useState<"terminal" | "browse">("terminal")
@@ -740,9 +738,7 @@ export function Projects() {
   const [command, setCommand] = useState("")
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [commandHistoryIndex, setCommandHistoryIndex] = useState<number | null>(null)
-  const [selectedSlug, setSelectedSlug] = useState(projects[0].slug)
   const [activeCarouselSlot, setActiveCarouselSlot] = useState(carouselMiddleStart)
-  const [carouselCenter, setCarouselCenter] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [terminalSplit, setTerminalSplit] = useState(68)
   const [portalHost, setPortalHost] = useState<HTMLElement | null>(null)
@@ -759,38 +755,17 @@ export function Projects() {
   useEffect(() => setPortalHost(document.body), [])
 
   useEffect(() => {
-    const updateProjectEntrance = () => {
-      const section = ref.current
+    const section = ref.current
 
-      if (!section) {
-        return
-      }
+    if (!section) return
 
-      const rect = section.getBoundingClientRect()
-      const enteringFromAbout = rect.top < window.innerHeight * 0.88
-      const backInAbout = rect.top >= window.innerHeight * 0.94
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { rootMargin: "-6% 0px -6%", threshold: 0.08 },
+    )
 
-      setIsInView((isRevealed) => {
-        if (backInAbout) {
-          return false
-        }
-
-        if (enteringFromAbout) {
-          return true
-        }
-
-        return isRevealed
-      })
-    }
-
-    updateProjectEntrance()
-    window.addEventListener("scroll", updateProjectEntrance, { passive: true })
-    window.addEventListener("resize", updateProjectEntrance)
-
-    return () => {
-      window.removeEventListener("scroll", updateProjectEntrance)
-      window.removeEventListener("resize", updateProjectEntrance)
-    }
+    observer.observe(section)
+    return () => observer.disconnect()
   }, [])
 
   const switchToBrowse = () => {
@@ -811,20 +786,8 @@ export function Projects() {
     outputRef.current.scrollTop = outputRef.current.scrollHeight
   }, [history])
 
-  useEffect(() => {
-    if (view !== "browse" || !carouselRef.current) {
-      return
-    }
-
-    const container = carouselRef.current
-    const middleItem = carouselItemRefs.current[carouselMiddleStart]
-
-    if (middleItem) {
-      container.scrollLeft = middleItem.offsetLeft - container.clientWidth / 2 + middleItem.clientWidth / 2
-    }
-  }, [view])
-
-  const selectedProject = getProject(selectedSlug) ?? projects[0]
+  const activeProjectIndex = activeCarouselSlot % projects.length
+  const selectedProject = projects[activeProjectIndex]
   const selectedDetails = projectDetails[selectedProject.slug]
   const selectedFeatures = selectedProject.files["features.txt"]
     .split("\n")
@@ -907,135 +870,58 @@ export function Projects() {
     }
   }, [lightboxIndex, selectedImages.length])
 
-  const getClosestCarouselIndex = () => {
-    const container = carouselRef.current
-
-    if (!container) {
-      return activeCarouselSlot
-    }
-
-    const containerCenter = container.scrollLeft + container.clientWidth / 2
-    let closestIndex = 0
-    let closestDistance = Number.POSITIVE_INFINITY
-
-    carouselItemRefs.current.forEach((item, index) => {
-      if (!item) {
-        return
-      }
-
-      const itemCenter = item.offsetLeft + item.clientWidth / 2
-      const distance = Math.abs(containerCenter - itemCenter)
-
-      if (distance < closestDistance) {
-        closestDistance = distance
-        closestIndex = index
-      }
-    })
-
-    return closestIndex
+  const selectCarouselSlot = (slot: number) => {
+    setActiveCarouselSlot(Math.min(carouselItems.length - 1, Math.max(0, slot)))
   }
-
-  const updateCarouselCenter = () => {
-    const container = carouselRef.current
-
-    if (!container) {
-      return
-    }
-
-    let closestIndex = getClosestCarouselIndex()
-
-    if (closestIndex < carouselLowerBoundary) {
-      const currentItem = carouselItemRefs.current[closestIndex]
-      const matchingMiddleItem = carouselItemRefs.current[(closestIndex % projects.length) + carouselMiddleStart]
-
-      if (currentItem && matchingMiddleItem) {
-        container.scrollLeft += matchingMiddleItem.offsetLeft - currentItem.offsetLeft
-        closestIndex = (closestIndex % projects.length) + carouselMiddleStart
-      }
-    }
-
-    if (closestIndex >= carouselUpperBoundary) {
-      const currentItem = carouselItemRefs.current[closestIndex]
-      const matchingMiddleItem = carouselItemRefs.current[(closestIndex % projects.length) + carouselMiddleStart]
-
-      if (currentItem && matchingMiddleItem) {
-        container.scrollLeft -= currentItem.offsetLeft - matchingMiddleItem.offsetLeft
-        closestIndex = (closestIndex % projects.length) + carouselMiddleStart
-      }
-    }
-
-    setCarouselCenter(container.scrollLeft + container.clientWidth / 2)
-
-    const project = carouselProjects[closestIndex]
-
-    setActiveCarouselSlot(closestIndex)
-
-    if (project) {
-      setSelectedSlug(project.slug)
-    }
-  }
-
-  const centerCarouselItem = (index: number, behavior: ScrollBehavior = "smooth") => {
-    const container = carouselRef.current
-    const item = carouselItemRefs.current[index]
-
-    if (!container || !item) {
-      return
-    }
-
-    container.scrollTo({
-      left: item.offsetLeft - container.clientWidth / 2 + item.clientWidth / 2,
-      behavior,
-    })
-
-    setActiveCarouselSlot(index)
-    setSelectedSlug(carouselProjects[index]?.slug ?? selectedSlug)
-  }
-
-  const settleCarouselToNearestItem = () => {
-    const closestIndex = getClosestCarouselIndex()
-    centerCarouselItem(closestIndex)
-  }
-
-  const handleCarouselWheel = (event: WheelEvent) => {
-    const container = carouselRef.current
-
-    if (!container) {
-      return
-    }
-
-    event.preventDefault()
-    event.stopPropagation()
-
-    const deltaMultiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? container.clientWidth : 1
-    const scrollAmount = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * deltaMultiplier
-
-    container.scrollLeft += scrollAmount
-    window.requestAnimationFrame(updateCarouselCenter)
-
-    if (carouselSettleTimer.current) {
-      clearTimeout(carouselSettleTimer.current)
-    }
-
-    carouselSettleTimer.current = setTimeout(settleCarouselToNearestItem, 240)
+  const moveCarousel = (direction: -1 | 1) => {
+    setActiveCarouselSlot((current) => Math.min(carouselItems.length - 1, Math.max(0, current + direction)))
   }
 
   useEffect(() => {
-    if (view !== "browse" || !carouselShellRef.current) {
-      return
+    if (view !== "browse") return
+
+    const container = carouselRef.current
+    const item = carouselItemRefs.current[activeCarouselSlot]
+
+    if (!container || !item) return
+
+    container.scrollTo({
+      left: item.offsetLeft - container.clientWidth / 2 + item.clientWidth / 2,
+      behavior: "smooth",
+    })
+  }, [activeCarouselSlot, view])
+
+  useEffect(() => () => {
+    if (carouselSettleTimer.current) clearTimeout(carouselSettleTimer.current)
+    if (carouselWheelUnlockTimer.current) clearTimeout(carouselWheelUnlockTimer.current)
+  }, [])
+
+  useEffect(() => {
+    if (view !== "browse" || !carouselShellRef.current) return
+
+    const shell = carouselShellRef.current
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault()
+      event.stopPropagation()
+
+      if (carouselWheelUnlockTimer.current) clearTimeout(carouselWheelUnlockTimer.current)
+      carouselWheelUnlockTimer.current = setTimeout(() => {
+        carouselWheelLocked.current = false
+      }, 180)
+
+      if (carouselWheelLocked.current) return
+
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+      if (Math.abs(delta) < 4) return
+
+      setActiveCarouselSlot((current) =>
+        Math.min(carouselItems.length - 1, Math.max(0, current + (delta > 0 ? 1 : -1))),
+      )
+      carouselWheelLocked.current = true
     }
 
-    const container = carouselShellRef.current
-
-    container.addEventListener("wheel", handleCarouselWheel, { passive: false })
-
-    return () => {
-      if (carouselSettleTimer.current) {
-        clearTimeout(carouselSettleTimer.current)
-      }
-
-      container.removeEventListener("wheel", handleCarouselWheel)
-    }
+    shell.addEventListener("wheel", handleWheel, { passive: false })
+    return () => shell.removeEventListener("wheel", handleWheel)
   }, [view])
 
   const runCommand = (rawCommand: string) => {
@@ -1085,7 +971,9 @@ export function Projects() {
         return { nextCwd: cwd, output: [`cd: no such folder: ${target}`] }
       }
 
-      setSelectedSlug(project.slug)
+      setActiveCarouselSlot(
+        carouselMiddleStart + projects.findIndex((candidate) => candidate.slug === project.slug),
+      )
       return { nextCwd: project.slug, output: [] }
     }
 
@@ -1217,7 +1105,7 @@ export function Projects() {
     <section
       id="projects"
       ref={ref}
-      className={`relative flex min-h-[100svh] items-center justify-center px-6 py-16 transition-colors duration-500 md:px-12 lg:px-24 ${
+      className={`relative flex min-h-[100svh] items-center justify-center px-6 pb-28 pt-16 transition-colors duration-500 md:px-12 md:pb-32 lg:px-24 ${
         view === "browse" ? "overflow-x-hidden bg-[#f8ddd2]" : "overflow-x-hidden bg-[#f8ddd2]"
       }`}
     >
@@ -1242,13 +1130,12 @@ export function Projects() {
           <>
             <motion.div
               className="-mb-3"
-              initial={{ opacity: 0, filter: "blur(14px)", y: 32 }}
+              initial={{ opacity: 0, y: 32 }}
               animate={isInView
-                ? { opacity: 1, filter: "blur(0px)", y: 0 }
-                : { opacity: 0, filter: "blur(14px)", y: 32 }}
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 32 }}
               transition={{
                 opacity: { duration: 0.42, delay: isInView ? 0.03 : 0, ease: "easeOut" },
-                filter: { duration: 0.5, delay: isInView ? 0.03 : 0, ease: "easeOut" },
                 y: { type: "spring", stiffness: 140, damping: 15, mass: 0.75, delay: isInView ? 0.03 : 0 },
               }}
             >
@@ -1266,21 +1153,19 @@ export function Projects() {
               ref={terminalSplitRef}
               className="relative flex w-full flex-col items-center justify-center gap-4 pt-16 lg:flex-row lg:items-stretch lg:gap-0"
               style={{ "--terminal-share": `${terminalSplit}%` } as CSSProperties}
-              initial={{ opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+              initial={{ opacity: 0, y: 72 }}
               animate={isInView
-                ? { opacity: 1, filter: "blur(0px)", y: 0, scale: 1 }
-                : { opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 72 }}
               transition={{
                 opacity: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
-                filter: { duration: 0.62, delay: isInView ? 0.08 : 0, ease: "easeOut" },
                 y: { type: "spring", stiffness: 125, damping: 14, mass: 0.85, delay: isInView ? 0.08 : 0 },
-                scale: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
               }}
             >
               <motion.div
                 layout
                 transition={{ duration: 0.22, ease: "easeInOut" }}
-                className={`depth-3 inset-sheen relative flex h-[clamp(640px,78svh,760px)] flex-col overflow-visible rounded-[10px] border border-[#a13a1e]/22 bg-[#a13a1e]/18 backdrop-blur-[3px] ${
+                className={`depth-3 inset-sheen relative flex h-[clamp(640px,78svh,760px)] flex-col overflow-visible rounded-[10px] border border-[#a13a1e]/22 bg-[#d98572]/90 ${
                   showTerminalMedia
                     ? "w-[min(88vw,988px)] lg:w-[var(--terminal-share)] lg:max-w-none lg:shrink-0"
                     : "w-[min(78vw,988px)]"
@@ -1396,7 +1281,7 @@ export function Projects() {
                   </div>
                   <motion.aside
                   key={terminalProject.slug}
-                  className="flex h-[clamp(640px,78svh,760px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/72 p-4 text-[#542916] shadow-[0_18px_40px_rgba(84,41,22,0.16)] backdrop-blur-sm lg:w-auto lg:min-w-0 lg:flex-1"
+                  className="flex h-[clamp(640px,78svh,760px)] w-[min(88vw,600px)] shrink-0 flex-col overflow-hidden rounded-[10px] border border-[#a13a1e]/22 bg-[#fefaf0]/92 p-4 text-[#542916] shadow-[0_18px_40px_rgba(84,41,22,0.16)] lg:w-auto lg:min-w-0 lg:flex-1"
                   initial={{ opacity: 0, x: 35, scale: 0.97 }}
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 35, scale: 0.97 }}
@@ -1449,15 +1334,13 @@ export function Projects() {
         ) : (
           <motion.div
             className="w-full"
-            initial={{ opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+            initial={{ opacity: 0, y: 72 }}
             animate={isInView
-              ? { opacity: 1, filter: "blur(0px)", y: 0, scale: 1 }
-              : { opacity: 0, filter: "blur(16px)", y: 72, scale: 0.985 }}
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 72 }}
             transition={{
               opacity: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
-              filter: { duration: 0.62, delay: isInView ? 0.08 : 0, ease: "easeOut" },
               y: { type: "spring", stiffness: 125, damping: 14, mass: 0.85, delay: isInView ? 0.08 : 0 },
-              scale: { duration: 0.5, delay: isInView ? 0.08 : 0, ease: "easeOut" },
             }}
           >
             <div className="relative mx-auto mb-5 w-fit pb-14">
@@ -1523,31 +1406,60 @@ export function Projects() {
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(254,250,240,0.28),transparent_38%),radial-gradient(circle_at_18%_82%,rgba(241,193,102,0.18),transparent_30%)]" />
               <div
                 ref={carouselRef}
-                onScroll={updateCarouselCenter}
-                className="absolute inset-y-0 left-5 right-5 z-10 flex items-center gap-3 overflow-x-auto overflow-y-hidden rounded-[inherit] overscroll-contain px-[21%] [scrollbar-width:none] md:left-8 md:right-8 md:gap-5 md:px-[25%] [&::-webkit-scrollbar]:hidden"
+                className="absolute inset-y-0 left-5 right-5 z-10 flex snap-x snap-mandatory items-center gap-4 overflow-x-auto overflow-y-hidden rounded-[inherit] px-[calc(50%_-_52px)] [scrollbar-width:none] md:left-8 md:right-8 md:gap-6 md:px-[calc(50%_-_60px)] [&::-webkit-scrollbar]:hidden"
                 aria-label="Browse projects"
+                tabIndex={0}
+                onScroll={() => {
+                  if (carouselSettleTimer.current) clearTimeout(carouselSettleTimer.current)
+                  carouselSettleTimer.current = setTimeout(() => {
+                    const container = carouselRef.current
+
+                    if (!container) return
+
+                    const center = container.scrollLeft + container.clientWidth / 2
+                    let closestIndex = activeCarouselSlot
+                    let closestDistance = Number.POSITIVE_INFINITY
+
+                    carouselItemRefs.current.forEach((item, index) => {
+                      if (!item) return
+                      const distance = Math.abs(center - item.offsetLeft - item.clientWidth / 2)
+
+                      if (distance < closestDistance) {
+                        closestDistance = distance
+                        closestIndex = index
+                      }
+                    })
+
+                    selectCarouselSlot(closestIndex)
+                  }, 140)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+                  event.preventDefault()
+                  moveCarousel(event.key === "ArrowRight" ? 1 : -1)
+                }}
               >
-                {carouselProjects.map((project, index) => {
+                {carouselItems.map((project, slot) => {
                   const Icon = iconMap[project.icon]
-                  const item = carouselItemRefs.current[index]
-                  const itemCenter = item ? item.offsetLeft + item.clientWidth / 2 : 0
-                  const distanceFromCenter = item ? Math.abs(carouselCenter - itemCenter) : Number.POSITIVE_INFINITY
-                  const circleSize = distanceFromCenter < 78 ? 160 : distanceFromCenter < 210 ? 110 : 62
-                  const iconSize = distanceFromCenter < 78 ? 68 : distanceFromCenter < 210 ? 48 : 28
+                  const isActive = slot === activeCarouselSlot
 
                   return (
                     <button
-                      key={`${project.slug}-${index}`}
+                      key={`${project.slug}-${slot}`}
                       ref={(node) => {
-                        carouselItemRefs.current[index] = node
+                        carouselItemRefs.current[slot] = node
                       }}
                       type="button"
-                      onClick={() => centerCarouselItem(index)}
-                      className="grid shrink-0 place-items-center rounded-full border border-[#fefaf0]/62 bg-[#fefaf0]/18 text-[#fefaf0]/92 shadow-[inset_0_1px_0_rgba(254,250,240,0.42)] transition-[width,height,background-color] duration-200 ease-out hover:bg-[#fefaf0]/28 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#fefaf0]"
-                      style={{ width: circleSize, height: circleSize }}
+                      onClick={() => selectCarouselSlot(slot)}
+                      className="relative grid size-[104px] shrink-0 snap-center place-items-center rounded-full focus-visible:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fefaf0] md:size-[120px]"
                       aria-label={`View ${project.name}`}
+                      aria-current={isActive ? "true" : undefined}
                     >
-                      <Icon style={{ width: iconSize, height: iconSize }} strokeWidth={1.5} />
+                      <span
+                        className={`grid size-full place-items-center rounded-full border text-[#fefaf0]/92 shadow-[inset_0_1px_0_rgba(254,250,240,0.42)] transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out hover:bg-[#fefaf0]/30 ${isActive ? "scale-110 border-2 border-[#fffaf2] bg-[#fefaf0]/42 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_0_6px_rgba(254,250,240,0.18),0_16px_36px_rgba(84,41,22,0.34)]" : "scale-95 border-[#fefaf0]/52 bg-[#fefaf0]/16"}`}
+                      >
+                        <Icon className={isActive ? "size-[52px] md:size-[62px]" : "size-[46px] md:size-[54px]"} strokeWidth={isActive ? 1.8 : 1.5} />
+                      </span>
                     </button>
                   )
                 })}
@@ -1556,7 +1468,7 @@ export function Projects() {
 
             <motion.div
               key={selectedProject.slug}
-              className="depth-2 inset-sheen mx-auto mt-7 max-w-4xl rounded-[8px] border border-[#a13a1e]/16 bg-[#fefaf0]/94 p-5 text-[#542916] md:p-6"
+              className="depth-2 inset-sheen mx-auto mt-7 w-full max-w-6xl rounded-[8px] border border-[#a13a1e]/16 bg-[#fefaf0]/94 p-5 text-[#542916] md:p-6 lg:p-8"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}

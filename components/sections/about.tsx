@@ -162,7 +162,7 @@ export function About({ isVisible }: AboutProps) {
   return (
     <section
       id="about"
-      className="relative min-h-[100svh] overflow-x-hidden bg-[#f8f1d9] px-6 pb-16 pt-20 text-[#515987] md:px-28 md:pb-20 md:pt-24 lg:px-48 lg:py-20 xl:px-64"
+      className="relative min-h-[100svh] overflow-x-hidden bg-[#f8f1d9] px-6 pb-28 pt-20 text-[#515987] md:px-28 md:pb-32 md:pt-24 lg:px-48 lg:pb-32 lg:pt-20 xl:px-64"
       style={{ fontFamily: "Arial, sans-serif" }}
     >
       <motion.div
